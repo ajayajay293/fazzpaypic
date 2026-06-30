@@ -3,269 +3,255 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FazzPayPic - Generator Struk Transaksi Sukses Mewah</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FazzPayPic - Pembuat Gambar Struk Transaksi Sukses Mewah</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: radial-gradient(120% 120% at 50% 10%, #ffffff 40%, #f1f5f9 100%);
+            background-color: #f8fafc;
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+<body class="min-h-screen text-slate-800 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
 
-    <!-- Header Navigation -->
-    <header class="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-blue-500/10 text-white">
-                    <i class="fa-solid fa-receipt text-xl"></i>
+    <!-- Header Navigation (Optimized for Mobile) -->
+    <header class="border-b border-slate-100 bg-white/95 backdrop-blur-md sticky top-0 z-50 py-3">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-xl text-white shadow-md shadow-blue-500/10">
+                    <i class="fa-solid fa-receipt text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-extrabold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent tracking-tight">FazzPay<span class="text-slate-900 font-semibold text-sm">Pic</span></h1>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PREMIUM RECEIPT ENGINE</p>
+                    <h1 class="text-base font-extrabold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent tracking-tight">FazzPay<span class="text-slate-900 font-semibold text-xs">Pic</span></h1>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Premium Receipt Engine</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <a href="/docs" class="text-xs font-bold text-slate-600 hover:text-blue-600 transition-colors py-2 px-3 rounded-xl hover:bg-slate-50 flex items-center gap-1.5">
-                    <i class="fa-solid fa-book-open"></i> API Docs
+            <div class="flex items-center gap-2">
+                <a href="/docs" class="text-[11px] font-bold text-slate-600 hover:text-blue-600 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-slate-50 flex items-center gap-1">
+                    <i class="fa-solid fa-book-open"></i> Docs
                 </a>
-                <a href="https://t.me/FazzGanteng" target="_blank" class="bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all text-xs font-bold py-2.5 px-4 rounded-xl flex items-center gap-1.5">
-                    <i class="fa-brands fa-telegram text-base"></i> Hubungi Owner
+                <a href="https://t.me/FazzGanteng" target="_blank" class="bg-blue-600 text-white hover:bg-blue-700 transition-all text-[11px] font-bold py-1.5 px-3 rounded-lg flex items-center gap-1 shadow-sm">
+                    <i class="fa-brands fa-telegram"></i> Telegram
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <!-- Left Side: Interactive Input Form -->
-            <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-xl font-extrabold text-slate-900">Custom Bukti Pembayaran</h2>
-                        <p class="text-xs text-slate-500">Sesuaikan informasi untuk dirender secara instan.</p>
+    <!-- Main Content Area (Layout Khusus HP) -->
+    <main class="max-w-7xl mx-auto px-4 py-6 w-full flex-grow flex flex-col gap-6">
+        
+        <!-- Live Preview Box di Bagian Atas (Agar Langsung Terlihat Hasil Rendernya di HP) -->
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-lg shadow-slate-100/50 flex flex-col items-center">
+            <h3 class="text-xs font-bold text-slate-400 mb-3 self-start flex items-center gap-1.5">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Hasil Render Gambar (Live Preview)
+            </h3>
+
+            <!-- Kotak Pembungkus Gambar - Aspek Rasio Pas Agar Tidak Gepeng -->
+            <div class="w-full max-w-[340px] border border-slate-100 rounded-2xl bg-slate-950 aspect-[750/1100] flex flex-col items-center justify-center overflow-hidden relative shadow-inner" id="resultContainer">
+                
+                <!-- Tampilan Awal sebelum Render -->
+                <div id="initialState" class="p-6 text-center space-y-3">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl shadow-inner">
+                        <i class="fa-solid fa-image"></i>
                     </div>
-                    <button type="button" onclick="loadDemoData()" class="self-start sm:self-center text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 py-2.5 px-4 rounded-xl transition-colors">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-fill Demo
-                    </button>
+                    <div>
+                        <p class="font-bold text-slate-800 text-xs">Belum Ada Struk</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Ketuk tombol "Auto-fill Demo" di bawah lalu render untuk melihat hasilnya.</p>
+                    </div>
                 </div>
 
-                <form id="receiptForm" class="space-y-5" onsubmit="generateReceipt(event)">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Harga -->
-                        <div class="space-y-1">
-                            <label class="block text-xs font-bold uppercase text-slate-400">Harga (Rupiah)</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-sm font-bold text-slate-400">Rp</span>
-                                <input type="number" id="price" required placeholder="Contoh: 175000" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
-                            </div>
-                        </div>
+                <!-- Indikator Loading saat Rendering -->
+                <div id="loadingState" class="hidden absolute inset-0 bg-slate-950/95 backdrop-blur-xs flex flex-col items-center justify-center space-y-3 z-10">
+                    <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent shadow-md"></div>
+                    <p class="text-[11px] font-extrabold text-blue-400 tracking-wider">Membuat Struk Premium...</p>
+                </div>
 
-                        <!-- Pembeli -->
-                        <div class="space-y-1">
-                            <label class="block text-xs font-bold uppercase text-slate-400">Nama Pembeli</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <i class="fa-solid fa-user"></i>
-                                </span>
-                                <input type="text" id="buyer" required placeholder="Contoh: Rian Hidayat" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
-                            </div>
-                        </div>
+                <!-- Tampilan Pesan Error -->
+                <div id="errorState" class="hidden p-6 text-center space-y-3 text-red-400">
+                    <div class="w-12 h-12 bg-red-950/50 rounded-full flex items-center justify-center mx-auto text-lg border border-red-500/30">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-xs">Gagal Menggambar</p>
+                        <p id="errorMessage" class="text-[10px] text-slate-400 mt-1"></p>
+                    </div>
+                </div>
 
-                        <!-- No Transaksi -->
-                        <div class="space-y-1">
-                            <label class="block text-xs font-bold uppercase text-slate-400">Nomor Transaksi / ID</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <i class="fa-solid fa-receipt"></i>
-                                </span>
-                                <input type="text" id="tx_id" required placeholder="Contoh: FPX-703735" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
-                            </div>
-                        </div>
+                <!-- Gambar PNG Hasil Render yang Sempurna (Tidak Gepeng/Stretched) -->
+                <img id="resultImg" class="hidden w-full h-full object-contain rounded-2xl cursor-zoom-in" alt="Bukti Sukses FazzPay">
+            </div>
 
-                        <!-- Nama Produk -->
-                        <div class="space-y-1">
-                            <label class="block text-xs font-bold uppercase text-slate-400">Nama Produk</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <i class="fa-solid fa-cube"></i>
-                                </span>
-                                <input type="text" id="product" required placeholder="Contoh: TOP UP 1450 DIAMOND FREE FIRE" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
-                            </div>
-                        </div>
+            <!-- Panel Tombol Aksi setelah Gambar Berhasil di-render -->
+            <div id="actionPanel" class="w-full max-w-[340px] mt-4 space-y-2 hidden">
+                <button onclick="downloadReceiptImage()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 text-xs shadow-md shadow-emerald-600/15">
+                    <i class="fa-solid fa-circle-down"></i> Simpan / Unduh Gambar (PNG)
+                </button>
+                <button onclick="copyImageUrl()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 text-[11px]">
+                    <i class="fa-solid fa-copy"></i> Salin URL Endpoint API
+                </button>
+            </div>
+        </div>
 
-                        <!-- Nama Owner -->
-                        <div class="space-y-1">
-                            <label class="block text-xs font-bold uppercase text-slate-400">Nama Owner (Merchant)</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <i class="fa-solid fa-store"></i>
-                                </span>
-                                <input type="text" id="owner_name" required placeholder="Contoh: Fazz Store Official" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
-                            </div>
-                        </div>
+        <!-- Kolom Formulir Input Detail -->
+        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-lg shadow-slate-100/50 space-y-5">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900">Detail Transaksi</h2>
+                    <p class="text-[11px] text-slate-400">Lengkapi formulir untuk membuat bukti pembayaran baru.</p>
+                </div>
+                <button type="button" onclick="loadDemoData()" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 py-1.5 px-3 rounded-lg transition-colors">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-fill Demo
+                </button>
+            </div>
 
-                        <!-- Username Owner -->
-                        <div class="space-y-1">
-                            <label class="block text-xs font-bold uppercase text-slate-400">Username Owner / Kontak</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <i class="fa-solid fa-at"></i>
-                                </span>
-                                <input type="text" id="owner_username" placeholder="Contoh: FazzGanteng" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
-                            </div>
+            <form id="receiptForm" class="space-y-4" onsubmit="generateReceipt(event)">
+                <div class="grid grid-cols-1 gap-3.5">
+                    <!-- Input Harga -->
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Harga (Rupiah)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-xs font-bold text-slate-400">Rp</span>
+                            <input type="number" id="price" required placeholder="Contoh: 175000" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs font-semibold">
+                        </div>
+                    </div>
+
+                    <!-- Input Pembeli -->
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Nama Pembeli</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="buyer" required placeholder="Contoh: Rian Hidayat" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs font-semibold">
+                        </div>
+                    </div>
+
+                    <!-- Input ID Transaksi -->
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Nomor Transaksi / ID</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs">
+                                <i class="fa-solid fa-receipt"></i>
+                            </span>
+                            <input type="text" id="tx_id" required placeholder="Contoh: FPX-477590" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs font-semibold">
+                        </div>
+                    </div>
+
+                    <!-- Input Nama Produk -->
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Nama Produk</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs">
+                                <i class="fa-solid fa-cube"></i>
+                            </span>
+                            <input type="text" id="product" required placeholder="Contoh: TOP UP 1450 DIAMOND FREE FIRE" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs font-semibold">
+                        </div>
+                    </div>
+
+                    <!-- Input Nama Owner -->
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Nama Owner (Merchant)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs">
+                                <i class="fa-solid fa-store"></i>
+                            </span>
+                            <input type="text" id="owner_name" required placeholder="Contoh: Fazz Store Official" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs font-semibold">
+                        </div>
+                    </div>
+
+                    <!-- Input Username Owner -->
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Username Owner / Kontak</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs">
+                                <i class="fa-solid fa-at"></i>
+                            </span>
+                            <input type="text" id="owner_username" placeholder="Contoh: FazzGanteng" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs font-semibold">
                         </div>
                     </div>
 
                     <!-- Tanggal Transaksi -->
                     <div class="space-y-1">
-                        <label class="block text-xs font-bold uppercase text-slate-400">Tanggal & Waktu Transaksi (Opsional)</label>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Tanggal & Waktu Transaksi (Opsional)</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs">
                                 <i class="fa-solid fa-calendar-day"></i>
                             </span>
-                            <input type="text" id="date" placeholder="Biarkan kosong untuk otomatisasi tanggal saat ini" 
-                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
+                            <input type="text" id="date" placeholder="Biarkan kosong untuk otomatisasi waktu saat ini" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs font-semibold">
                         </div>
                     </div>
 
-                    <!-- Pilih Tema Template -->
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold uppercase text-slate-400">Pilih Tema Template</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <label class="cursor-pointer border-2 border-blue-500 rounded-xl p-3 flex items-center gap-2.5 bg-blue-50/50 transition-all" id="theme-blue-label">
+                    <!-- Tema Template -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Pilih Tema Template</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="cursor-pointer border border-blue-500 rounded-xl p-2.5 flex items-center justify-center gap-2 bg-blue-50/50 transition-all" id="theme-blue-label">
                                 <input type="radio" name="template" value="blue" checked onclick="selectTheme('blue')" class="hidden">
-                                <span class="w-4 h-4 rounded-full bg-blue-600 block border-2 border-white ring-2 ring-blue-600"></span>
-                                <span class="text-xs font-bold text-slate-700">Fazz Blue</span>
+                                <span class="w-3.5 h-3.5 rounded-full bg-blue-600 block border-2 border-white ring-1 ring-blue-600"></span>
+                                <span class="text-[11px] font-bold text-slate-700">Blue</span>
                             </label>
-                            <label class="cursor-pointer border-2 border-slate-200 rounded-xl p-3 flex items-center gap-2.5 bg-white hover:bg-slate-50 transition-all" id="theme-emerald-label">
+                            <label class="cursor-pointer border border-slate-200 rounded-xl p-2.5 flex items-center justify-center gap-2 bg-white hover:bg-slate-50 transition-all" id="theme-emerald-label">
                                 <input type="radio" name="template" value="emerald" onclick="selectTheme('emerald')" class="hidden">
-                                <span class="w-4 h-4 rounded-full bg-emerald-500 block"></span>
-                                <span class="text-xs font-bold text-slate-700">Eco Green</span>
+                                <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 block"></span>
+                                <span class="text-[11px] font-bold text-slate-700">Green</span>
                             </label>
-                            <label class="cursor-pointer border-2 border-slate-200 rounded-xl p-3 flex items-center gap-2.5 bg-white hover:bg-slate-50 transition-all" id="theme-violet-label">
+                            <label class="cursor-pointer border border-slate-200 rounded-xl p-2.5 flex items-center justify-center gap-2 bg-white hover:bg-slate-50 transition-all" id="theme-violet-label">
                                 <input type="radio" name="template" value="violet" onclick="selectTheme('violet')" class="hidden">
-                                <span class="w-4 h-4 rounded-full bg-violet-600 block"></span>
-                                <span class="text-xs font-bold text-slate-700">Vibrant Purple</span>
+                                <span class="w-3.5 h-3.5 rounded-full bg-violet-600 block"></span>
+                                <span class="text-[11px] font-bold text-slate-700">Purple</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Input API Key -->
-                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200/60 space-y-1.5">
+                    <!-- API Key Mandat Privasi -->
+                    <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/60 space-y-1">
                         <div class="flex justify-between items-center">
-                            <label class="block text-xs font-bold uppercase text-amber-800">Master API Key</label>
-                            <a href="https://t.me/FazzGanteng" target="_blank" class="text-[10px] text-blue-600 hover:underline font-bold flex items-center gap-0.5">
-                                Belum punya? Chat @FazzGanteng <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            <label class="block text-[10px] font-bold uppercase text-amber-800">Master API Key</label>
+                            <a href="https://t.me/FazzGanteng" target="_blank" class="text-[9px] text-blue-600 hover:underline font-bold flex items-center gap-0.5">
+                                Klaim API Key ke @FazzGanteng <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-amber-600">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600 text-xs">
                                 <i class="fa-solid fa-key"></i>
                             </span>
-                            <input type="password" id="apikey" required placeholder="Masukkan 9-karakter API Key resmi" 
-                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm font-semibold bg-white text-amber-950 placeholder-amber-800/40">
+                            <input type="password" id="apikey" required placeholder="Masukkan API Key resmi" 
+                                class="w-full pl-9 pr-3 py-2 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-xs font-semibold bg-white text-amber-950 placeholder-amber-800/40">
                         </div>
                     </div>
-
-                    <!-- Tombol Render Utama -->
-                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-500/10 hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 text-base">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Render Gambar Struk Premium
-                    </button>
-                </form>
-            </div>
-
-            <!-- Right Side: Live Premium Preview -->
-            <div class="lg:col-span-5 flex flex-col items-center justify-center lg:sticky lg:top-24">
-                <div class="w-full max-w-[400px] bg-white rounded-3xl p-5 border border-slate-100 shadow-xl shadow-slate-100/50 flex flex-col items-center">
-                    <h3 class="text-xs font-bold text-slate-400 mb-4 self-start flex items-center gap-2">
-                        <span class="flex h-2 w-2 relative">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        Hasil Live Render Gambar PNG
-                    </h3>
-
-                    <!-- Canvas/Image Frame Wrapper -->
-                    <div class="w-full border border-slate-100 rounded-2xl bg-slate-950 aspect-[5/7.3] flex flex-col items-center justify-center overflow-hidden relative shadow-inner" id="resultContainer">
-                        
-                        <!-- Initial State -->
-                        <div id="initialState" class="p-6 text-center space-y-4">
-                            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
-                                <i class="fa-solid fa-receipt"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-slate-800 text-sm">Belum ada struk dibuat</p>
-                                <p class="text-xs text-slate-400 mt-1 max-w-[220px] mx-auto">Isi form lengkap lalu ketuk tombol Render atau jalankan "Auto-fill Demo".</p>
-                            </div>
-                        </div>
-
-                        <!-- Loading State -->
-                        <div id="loadingState" class="hidden absolute inset-0 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center space-y-3 z-10">
-                            <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent shadow-md"></div>
-                            <p class="text-xs font-extrabold text-blue-300">Merender Font & Desain Struk...</p>
-                        </div>
-
-                        <!-- Error State -->
-                        <div id="errorState" class="hidden p-6 text-center space-y-4 text-red-400">
-                            <div class="w-14 h-14 bg-red-950/50 rounded-full flex items-center justify-center mx-auto text-xl border border-red-500/30">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-sm">Gagal Render Gambar</p>
-                                <p id="errorMessage" class="text-xs text-slate-400 mt-1"></p>
-                            </div>
-                        </div>
-
-                        <!-- Success State (PNG Rendered) -->
-                        <img id="resultImg" class="hidden w-full h-full object-contain rounded-2xl shadow-md cursor-zoom-in" alt="FazzPay Sukses">
-                    </div>
-
-                    <!-- Actions Button Panel -->
-                    <div id="actionPanel" class="w-full mt-4 space-y-2 hidden">
-                        <button onclick="downloadReceiptImage()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-md shadow-emerald-600/10">
-                            <i class="fa-solid fa-cloud-arrow-down"></i> Unduh Hasil Gambar (PNG)
-                        </button>
-                        <button onclick="copyImageUrl()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-xs">
-                            <i class="fa-solid fa-copy"></i> Salin URL Endpoint API
-                        </button>
-                    </div>
-
                 </div>
-            </div>
 
+                <!-- Tombol Submit Render -->
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 active:scale-95 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-500/10 transition-all flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Render Struk Premium
+                </button>
+            </form>
         </div>
     </main>
 
     <!-- Footer Area / Watermark -->
-    <footer class="border-t border-slate-100 bg-white py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">RECEIPT ENGINE</span>
-                <span class="text-xs font-bold text-blue-600">FAZZPAYPIC</span>
-            </div>
-            
-            <!-- WATERMARK UTAMA -->
-            <div class="text-center md:text-right">
-                <p class="text-[11px] text-slate-400 font-semibold">Layanan Pembuat Gambar Struk Transaksi Instan</p>
-                <p class="text-sm font-extrabold text-slate-900 tracking-tight mt-0.5">
-                    <i class="fa-solid fa-shield-halved text-blue-600 mr-1"></i> fazzpaypic.vercel.app
-                </p>
-            </div>
+    <footer class="border-t border-slate-100 bg-white py-5 mt-8">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center gap-2 text-center">
+            <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">Receipt Engine FazzPayPic</p>
+            <p class="text-xs font-extrabold text-slate-800 tracking-tight">
+                <i class="fa-solid fa-shield-halved text-blue-600 mr-1"></i> fazzpaypic.vercel.app
+            </p>
         </div>
     </footer>
 
@@ -280,11 +266,11 @@
             themes.forEach(t => {
                 const label = document.getElementById(`theme-${t}-label`);
                 if (t === theme) {
-                    label.className = "cursor-pointer border-2 border-blue-500 rounded-xl p-3 flex items-center gap-2.5 bg-blue-50/50 transition-all";
-                    label.querySelector('.w-4').className = `w-4 h-4 rounded-full bg-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')} block border-2 border-white ring-2 ring-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')}`;
+                    label.className = "cursor-pointer border border-blue-500 rounded-xl p-2.5 flex items-center justify-center gap-2 bg-blue-50/50 transition-all";
+                    label.querySelector('.w-3\\.5').className = `w-3.5 h-3.5 rounded-full bg-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')} block border-2 border-white ring-1 ring-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')}`;
                 } else {
-                    label.className = "cursor-pointer border-2 border-slate-200 rounded-xl p-3 flex items-center gap-2.5 bg-white hover:bg-slate-50 transition-all";
-                    label.querySelector('.w-4').className = `w-4 h-4 rounded-full bg-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')} block`;
+                    label.className = "cursor-pointer border border-slate-200 rounded-xl p-2.5 flex items-center justify-center gap-2 bg-white hover:bg-slate-50 transition-all";
+                    label.querySelector('.w-3\\.5').className = `w-3.5 h-3.5 rounded-full bg-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')} block`;
                 }
             });
         }
