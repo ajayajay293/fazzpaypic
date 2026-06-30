@@ -4,251 +4,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FazzPayPic - Generator Bukti Transaksi Sukses Modern</title>
+    <title>FazzPayPic - Pembuat Bukti Transaksi Sukses Otomatis</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome untuk Icons Premium -->
+    <!-- FontAwesome Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .gradient-bg {
-            background: radial-gradient(120% 120% at 50% 10%, #ffffff 40%, #eff6ff 100%);
+            background: radial-gradient(120% 120% at 50% 10%, #ffffff 50%, #f1f5f9 100%);
         }
     </style>
 </head>
-<body class="gradient-bg min-h-screen text-gray-800 flex flex-col justify-between">
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
 
-    <!-- Header / Navigation -->
-    <header class="border-b border-blue-50/80 bg-white/70 backdrop-blur-md sticky top-0 z-50">
+    <!-- Header Navigation -->
+    <header class="border-b border-slate-100 bg-white/85 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
+                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-2xl shadow-md shadow-blue-500/10">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent tracking-tight">FazzPay<span class="text-indigo-900 font-semibold text-sm">Pic</span></h1>
-                    <p class="text-[10px] text-gray-400 font-medium tracking-wide uppercase">Transaction Receipt Engine</p>
+                    <h1 class="text-lg font-extrabold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent tracking-tight">FazzPay<span class="text-indigo-950 font-medium text-sm">Pic</span></h1>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Professional Receipt Creator</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="/docs" class="text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors py-2 px-3 rounded-lg hover:bg-gray-50 flex items-center gap-2">
-                    <i class="fa-solid fa-book-open"></i> API Docs
+            <div class="flex items-center gap-3">
+                <a href="/docs" class="text-xs font-bold text-slate-600 hover:text-blue-600 transition-colors py-2 px-3 rounded-xl hover:bg-slate-50 flex items-center gap-1.5">
+                    <i class="fa-solid fa-book"></i> API Docs
                 </a>
-                <a href="https://t.me/FazzGanteng" target="_blank" class="bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all text-xs font-bold py-2 px-4 rounded-xl flex items-center gap-1.5">
-                    <i class="fa-brands fa-telegram text-sm"></i> Hubungi Owner
+                <a href="https://t.me/FazzGanteng" target="_blank" class="bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all text-xs font-bold py-2 px-3.5 rounded-xl flex items-center gap-1.5">
+                    <i class="fa-brands fa-telegram text-base"></i> Hubungi Owner
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Grid -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow">
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- Left Side: Interactive Form -->
-            <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/50 space-y-6">
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Detail Struk Transaksi</h2>
-                        <button type="button" onclick="loadDemoData()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 py-1.5 px-3 rounded-lg transition-colors">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-fill Demo
-                        </button>
+            <!-- Left Side: Interactive Inputs -->
+            <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/50 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-900">Form Pembuat Struk Sukses</h2>
+                        <p class="text-xs text-slate-500">Sesuaikan data transaksi di bawah ini dengan lengkap.</p>
                     </div>
-                    <p class="text-sm text-gray-500">Sesuaikan informasi berikut untuk dirender ke dalam bentuk gambar struk modern.</p>
+                    <button type="button" onclick="loadDemoData()" class="self-start sm:self-center text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 py-2 px-4 rounded-xl transition-colors">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-fill Demo
+                    </button>
                 </div>
 
                 <form id="receiptForm" class="space-y-5" onsubmit="generateReceipt(event)">
-                    <!-- Grid Dua Kolom -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <!-- Input Nama Produk -->
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Nama Produk / Layanan</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Harga -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-extrabold uppercase text-slate-400">Harga (Rupiah)</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                    <i class="fa-solid fa-cube"></i>
-                                </span>
-                                <input type="text" id="product" required placeholder="Contoh: Premium Account 1 Bulan" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-sm font-bold text-slate-400">Rp</span>
+                                <input type="number" id="price" required placeholder="Contoh: 15000" 
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
                             </div>
                         </div>
 
-                        <!-- Input Harga -->
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Harga (Rupiah)</label>
+                        <!-- Pembeli -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-extrabold uppercase text-slate-400">Nama Pembeli</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 text-sm font-bold">
-                                    Rp
-                                </span>
-                                <input type="number" id="price" required placeholder="Contoh: 50000" 
-                                    class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium">
-                            </div>
-                        </div>
-
-                        <!-- Input Nama Pembeli -->
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Nama Pembeli</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                                     <i class="fa-solid fa-user"></i>
                                 </span>
                                 <input type="text" id="buyer" required placeholder="Contoh: Ahmad Subarjo" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium">
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
                             </div>
                         </div>
 
-                        <!-- Input No Transaksi -->
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Nomor Transaksi / ID</label>
+                        <!-- ID Transaksi -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-extrabold uppercase text-slate-400">Nomor Transaksi / ID</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                                     <i class="fa-solid fa-receipt"></i>
                                 </span>
-                                <input type="text" id="tx_id" required placeholder="Contoh: TX-90812371" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium">
+                                <input type="text" id="tx_id" required placeholder="Contoh: TX928131" 
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
                             </div>
                         </div>
 
-                        <!-- Input Nama Owner -->
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Nama Owner (Merchant)</label>
+                        <!-- Nama Produk -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-extrabold uppercase text-slate-400">Nama Produk</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-cube"></i>
+                                </span>
+                                <input type="text" id="product" required placeholder="Contoh: Premium Akun" 
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
+                            </div>
+                        </div>
+
+                        <!-- Nama Owner -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-extrabold uppercase text-slate-400">Nama Owner (Merchant)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                                     <i class="fa-solid fa-store"></i>
                                 </span>
-                                <input type="text" id="owner_name" required placeholder="Contoh: Fazz Store" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium">
+                                <input type="text" id="owner_name" required placeholder="Contoh: Fazz Shop" 
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
                             </div>
                         </div>
 
-                        <!-- Input Username Owner -->
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Username Owner / Kontak</label>
+                        <!-- Username Owner -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-extrabold uppercase text-slate-400">Username Owner / Kontak</label>
                             <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                                     <i class="fa-solid fa-at"></i>
                                 </span>
                                 <input type="text" id="owner_username" placeholder="Contoh: FazzGanteng" 
-                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium">
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Input Tanggal & Waktu -->
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Tanggal & Waktu Transaksi (Opsional)</label>
+                    <!-- Tanggal Transaksi -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-extrabold uppercase text-slate-400">Tanggal & Waktu Transaksi (Opsional)</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                                <i class="fa-solid fa-calendar-days"></i>
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <i class="fa-solid fa-calendar-day"></i>
                             </span>
                             <input type="text" id="date" placeholder="Biarkan kosong untuk otomatisasi waktu saat ini" 
-                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-medium">
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm font-semibold">
                         </div>
                     </div>
 
-                    <!-- Pilih Template & Tema Warna -->
+                    <!-- Pilih Tema Template -->
                     <div class="space-y-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Pilih Tema Template</label>
+                        <label class="block text-xs font-extrabold uppercase text-slate-400">Pilih Tema Desain</label>
                         <div class="grid grid-cols-3 gap-3">
-                            <label class="cursor-pointer border-2 border-blue-500 rounded-xl p-3 flex items-center gap-3 bg-blue-50/50 transition-all" id="theme-blue-label">
+                            <label class="cursor-pointer border-2 border-blue-500 rounded-xl p-3 flex items-center gap-2.5 bg-blue-50/50 transition-all" id="theme-blue-label">
                                 <input type="radio" name="template" value="blue" checked onclick="selectTheme('blue')" class="hidden">
                                 <span class="w-4 h-4 rounded-full bg-blue-600 block border-2 border-white ring-2 ring-blue-600"></span>
-                                <span class="text-xs font-bold text-gray-700">Fazz Blue</span>
+                                <span class="text-xs font-bold text-slate-700">Fazz Blue</span>
                             </label>
-                            <label class="cursor-pointer border-2 border-gray-200 rounded-xl p-3 flex items-center gap-3 bg-white hover:bg-gray-50 transition-all" id="theme-emerald-label">
+                            <label class="cursor-pointer border-2 border-slate-200 rounded-xl p-3 flex items-center gap-2.5 bg-white hover:bg-slate-50 transition-all" id="theme-emerald-label">
                                 <input type="radio" name="template" value="emerald" onclick="selectTheme('emerald')" class="hidden">
                                 <span class="w-4 h-4 rounded-full bg-emerald-500 block"></span>
-                                <span class="text-xs font-bold text-gray-700">Eco Green</span>
+                                <span class="text-xs font-bold text-slate-700">Eco Green</span>
                             </label>
-                            <label class="cursor-pointer border-2 border-gray-200 rounded-xl p-3 flex items-center gap-3 bg-white hover:bg-gray-50 transition-all" id="theme-violet-label">
+                            <label class="cursor-pointer border-2 border-slate-200 rounded-xl p-3 flex items-center gap-2.5 bg-white hover:bg-slate-50 transition-all" id="theme-violet-label">
                                 <input type="radio" name="template" value="violet" onclick="selectTheme('violet')" class="hidden">
                                 <span class="w-4 h-4 rounded-full bg-violet-600 block"></span>
-                                <span class="text-xs font-bold text-gray-700">Vibrant Purple</span>
+                                <span class="text-xs font-bold text-slate-700">Vibrant Purple</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Input API Key (Wajib diisi oleh pengguna) -->
-                    <div class="space-y-1.5 p-4 bg-yellow-50 rounded-2xl border border-yellow-200/60">
+                    <!-- Input API Key (Privasi Aman di Serverless) -->
+                    <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200/60 space-y-1.5">
                         <div class="flex justify-between items-center">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-yellow-800">Master API Key</label>
-                            <a href="https://t.me/FazzGanteng" target="_blank" class="text-[10px] text-blue-600 hover:underline font-semibold flex items-center gap-0.5">
-                                Belum punya? Hubungi @FazzGanteng <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            <label class="block text-xs font-bold uppercase text-amber-800">Master API Key</label>
+                            <a href="https://t.me/FazzGanteng" target="_blank" class="text-[10px] text-blue-600 hover:underline font-bold flex items-center gap-0.5">
+                                Klaim API Key ke @FazzGanteng <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
-                        <div class="relative mt-1">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-yellow-600">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-amber-600">
                                 <i class="fa-solid fa-key"></i>
                             </span>
-                            <input type="password" id="apikey" required placeholder="Masukkan 9-karakter API Key resmi" 
-                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-yellow-200 focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-500 transition-all text-sm font-semibold bg-white placeholder-yellow-800/40 text-yellow-900">
+                            <input type="password" id="apikey" required placeholder="Masukkan 9-karakter API Key resmi Anda" 
+                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all text-sm font-semibold bg-white text-amber-950 placeholder-amber-800/40">
                         </div>
                     </div>
 
                     <!-- Tombol Generate Utama -->
-                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/10 hover:shadow-indigo-500/20 transition-all duration-300 flex items-center justify-center gap-2 text-base">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Foto Transaksi Sukses
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-500/10 hover:shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 text-base">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Render Gambar Struk Premium
                     </button>
                 </form>
             </div>
 
-            <!-- Right Side: Live Interactive Preview Card -->
-            <div class="lg:col-span-5 flex flex-col items-center justify-center sticky top-24">
-                <div class="w-full max-w-[380px] bg-white rounded-3xl p-5 border border-gray-100 shadow-xl shadow-gray-100/50 flex flex-col items-center">
-                    <h3 class="text-sm font-bold text-gray-500 mb-4 self-start flex items-center gap-2">
-                        <span class="flex h-2.5 w-2.5 relative">
+            <!-- Right Side: Live Premium Preview -->
+            <div class="lg:col-span-5 flex flex-col items-center justify-center lg:sticky lg:top-24">
+                <div class="w-full max-w-[400px] bg-white rounded-3xl p-5 border border-slate-100 shadow-xl shadow-slate-100/50 flex flex-col items-center">
+                    <h3 class="text-xs font-bold text-slate-400 mb-4 self-start flex items-center gap-2">
+                        <span class="flex h-2 w-2 relative">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                         </span>
-                        Hasil Render Gambar (Live Preview)
+                        Live Preview (Gambar PNG Asli)
                     </h3>
 
-                    <!-- Frame Canvas/Image -->
-                    <div class="w-full border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50 aspect-[5/7.5] flex flex-col items-center justify-center overflow-hidden relative" id="resultContainer">
+                    <!-- Canvas/Image Frame Wrapper -->
+                    <div class="w-full border border-slate-100 rounded-2xl bg-slate-50 aspect-[5.2/7.8] flex flex-col items-center justify-center overflow-hidden relative shadow-inner" id="resultContainer">
                         
                         <!-- Initial State -->
                         <div id="initialState" class="p-6 text-center space-y-4">
-                            <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
                                 <i class="fa-solid fa-receipt"></i>
                             </div>
                             <div>
-                                <p class="font-bold text-gray-800 text-sm">Belum ada gambar yang dibuat</p>
-                                <p class="text-xs text-gray-400 mt-1 max-w-[200px] mx-auto">Isi formulir lengkap dan tekan tombol "Buat Foto" atau jalankan "Auto-fill Demo".</p>
+                                <p class="font-bold text-slate-800 text-sm">Belum ada struk dibuat</p>
+                                <p class="text-xs text-slate-400 mt-1 max-w-[220px] mx-auto">Isi form dan jalankan render, atau gunakan tombol "Auto-fill Demo" untuk mencoba.</p>
                             </div>
                         </div>
 
                         <!-- Loading State -->
-                        <div id="loadingState" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center space-y-3 z-10">
-                            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent shadow-lg shadow-blue-500/10"></div>
-                            <p class="text-sm font-extrabold text-blue-900">Merender Desain Struk...</p>
+                        <div id="loadingState" class="hidden absolute inset-0 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center space-y-3 z-10">
+                            <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent shadow-md"></div>
+                            <p class="text-xs font-extrabold text-blue-900">Merender Font & Grafis Struk...</p>
                         </div>
 
                         <!-- Error State -->
                         <div id="errorState" class="hidden p-6 text-center space-y-4 text-red-500">
-                            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto text-2xl">
+                            <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto text-xl">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
                             <div>
-                                <p class="font-bold text-sm">Gagal Membuat Struk</p>
-                                <p id="errorMessage" class="text-xs text-gray-500 mt-1"></p>
+                                <p class="font-bold text-sm">Gagal Render Gambar</p>
+                                <p id="errorMessage" class="text-xs text-slate-500 mt-1"></p>
                             </div>
                         </div>
 
-                        <!-- Succes State (Dynamic Img) -->
-                        <img id="resultImg" class="hidden w-full h-full object-cover rounded-xl shadow-md cursor-zoom-in" alt="FazzPay Sukses">
+                        <!-- Success State (PNG Rendered) -->
+                        <img id="resultImg" class="hidden w-full h-full object-contain rounded-2xl shadow-md cursor-zoom-in" alt="FazzPay Sukses">
                     </div>
 
-                    <!-- Actions Panel for Generated Receipt -->
+                    <!-- Actions Button Panel -->
                     <div id="actionPanel" class="w-full mt-4 space-y-2 hidden">
-                        <button onclick="downloadReceiptImage()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-md shadow-emerald-600/10">
-                            <i class="fa-solid fa-circle-down"></i> Unduh Gambar (PNG)
+                        <button onclick="downloadReceiptImage()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-md shadow-emerald-600/10">
+                            <i class="fa-solid fa-cloud-arrow-down"></i> Unduh Hasil Gambar (PNG)
                         </button>
-                        <button onclick="copyImageUrl()" class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-xs">
-                            <i class="fa-solid fa-copy"></i> Salin URL Gambar API
+                        <button onclick="copyImageUrl()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-xs">
+                            <i class="fa-solid fa-copy"></i> Salin URL Endpoint API
                         </button>
                     </div>
 
@@ -258,29 +253,28 @@
         </div>
     </main>
 
-    <!-- Footer Area & Watermark -->
-    <footer class="border-t border-gray-100 bg-white py-8 mt-10">
+    <!-- Footer Area / Watermark -->
+    <footer class="border-t border-slate-100 bg-white py-6 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2">
-                <span class="text-xs font-extrabold text-gray-500 tracking-wider">POWERED BY</span>
-                <span class="text-sm font-bold text-blue-600">FAZZPAY RECEIPT ENGINE</span>
+                <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Transaction Engine</span>
+                <span class="text-xs font-bold text-blue-600">FAZZPAYPIC</span>
             </div>
             
-            <!-- WATERMARK UTAMA DIBAWAH -->
+            <!-- WATERMARK UTAMA -->
             <div class="text-center md:text-right">
-                <p class="text-xs text-gray-400 font-medium">Sistem Pembuat Gambar Transaksi Fungsional & Otomatis</p>
-                <p class="text-sm font-extrabold text-indigo-900 tracking-tight mt-0.5">
+                <p class="text-[11px] text-slate-400 font-semibold">Layanan Render Transaksi instan & API Aman</p>
+                <p class="text-sm font-extrabold text-slate-900 tracking-tight mt-0.5">
                     <i class="fa-solid fa-shield-halved text-blue-600 mr-1"></i> fazzpaypic.vercel.app
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript Actions Logic -->
+    <!-- Frontend Logics -->
     <script>
         let currentTheme = 'blue';
 
-        // Ganti visual template terpilih
         function selectTheme(theme) {
             currentTheme = theme;
             const themes = ['blue', 'emerald', 'violet'];
@@ -288,29 +282,26 @@
             themes.forEach(t => {
                 const label = document.getElementById(`theme-${t}-label`);
                 if (t === theme) {
-                    label.className = "cursor-pointer border-2 border-blue-500 rounded-xl p-3 flex items-center gap-3 bg-blue-50/50 transition-all";
+                    label.className = "cursor-pointer border-2 border-blue-500 rounded-xl p-3 flex items-center gap-2.5 bg-blue-50/50 transition-all";
                     label.querySelector('.w-4').className = `w-4 h-4 rounded-full bg-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')} block border-2 border-white ring-2 ring-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')}`;
                 } else {
-                    label.className = "cursor-pointer border-2 border-gray-200 rounded-xl p-3 flex items-center gap-3 bg-white hover:bg-gray-50 transition-all";
+                    label.className = "cursor-pointer border-2 border-slate-200 rounded-xl p-3 flex items-center gap-2.5 bg-white hover:bg-slate-50 transition-all";
                     label.querySelector('.w-4').className = `w-4 h-4 rounded-full bg-${t === 'emerald' ? 'emerald-500' : (t === 'violet' ? 'violet-600' : 'blue-600')} block`;
                 }
             });
         }
 
-        // Auto-fill Demo Data
         function loadDemoData() {
-            document.getElementById('product').value = "Premium Store Rank VIP Fazz 💎";
+            document.getElementById('product').value = "Top Up 1450 Diamond Free Fire 💎";
             document.getElementById('price').value = "175000";
-            document.getElementById('buyer').value = "Bambang Pamungkas";
-            document.getElementById('tx_id').value = "FP-" + Math.floor(10000000 + Math.random() * 90000000);
-            document.getElementById('owner_name').value = "Fazz Store ID";
+            document.getElementById('buyer').value = "Rian Hidayat";
+            document.getElementById('tx_id').value = "FPX-" + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('owner_name').value = "Fazz Store Official";
             document.getElementById('owner_username').value = "FazzGanteng";
             document.getElementById('date').value = new Date().toLocaleString('id-ID') + " WIB";
-            // Set default key test agar user mudah melakukan demo pengujian langsung
-            document.getElementById('apikey').value = "fazzganzz";
+            document.getElementById('apikey').value = "fazzganzz"; // Diisi otomatis untuk mempermudah tes
         }
 
-        // Kirim Permintaan Pembuatan Gambar Ke API Server Backend
         function generateReceipt(event) {
             event.preventDefault();
 
@@ -329,18 +320,14 @@
             const resultImg = document.getElementById('resultImg');
             const actionPanel = document.getElementById('actionPanel');
 
-            // Reset States
             initial.classList.add('hidden');
             error.classList.add('hidden');
             resultImg.classList.add('hidden');
             actionPanel.classList.add('hidden');
             loading.classList.remove('hidden');
 
-            // Susun URL API yang mengembalikan format gambar stream PNG
             const apiUrl = `/api/generate?product=${product}&price=${price}&buyer=${buyer}&tx_id=${tx_id}&owner_name=${owner_name}&owner_username=${owner_username}&date=${date}&template=${currentTheme}&apikey=${apikey}`;
 
-            // Preload Image ke elemen img agar kita tahu responnya berhasil (bukan JSON Error)
-            // Caranya: gunakan Fetch untuk validasi response statusnya terlebih dahulu
             fetch(apiUrl)
                 .then(response => {
                     if (!response.ok) {
@@ -362,20 +349,18 @@
                 });
         }
 
-        // Handler Download Struk PNG
         function downloadReceiptImage() {
             const resultImg = document.getElementById('resultImg');
             if (resultImg.src) {
                 const a = document.createElement('a');
                 a.href = resultImg.src;
-                a.download = `FazzPayPic_${document.getElementById('tx_id').value || 'receipt'}.png`;
+                a.download = `FazzPay_${document.getElementById('tx_id').value || 'success'}.png`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
             }
         }
 
-        // Salin Endpoint URL Pemanggilan API Instan
         function copyImageUrl() {
             const product = encodeURIComponent(document.getElementById('product').value);
             const price = encodeURIComponent(document.getElementById('price').value);
@@ -389,10 +374,9 @@
             const domain = window.location.origin;
             const fullApiUrl = `${domain}/api/generate?product=${product}&price=${price}&buyer=${buyer}&tx_id=${tx_id}&owner_name=${owner_name}&owner_username=${owner_username}&date=${date}&template=${currentTheme}&apikey=${apikey}`;
 
-            // Menyalin ke Clipboard aman dengan fallbacks
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(fullApiUrl).then(() => {
-                    alert("Tautan pemicu endpoint API berhasil disalin ke papan klip Anda!");
+                    alert("Tautan pemicu API berhasil disalin!");
                 });
             } else {
                 const el = document.createElement('textarea');
@@ -401,7 +385,7 @@
                 el.select();
                 document.execCommand('copy');
                 document.body.removeChild(el);
-                alert("Tautan pemicu endpoint API berhasil disalin ke papan klip Anda!");
+                alert("Tautan pemicu API berhasil disalin!");
             }
         }
     </script>
