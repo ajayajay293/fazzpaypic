@@ -2,19 +2,63 @@
 const express = require('express');
 const { createCanvas, registerFont } = require('canvas');
 const path = require('path');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files dari folder public secara manual jika diperlukan
+// Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
 
-// API Key Rahasia Owner
-const OWNER_API_KEY = "fazzganzz";
+// Path penyimpanan font lokal di direktori sementara Vercel (/tmp)
+const fontPath = '/tmp/PlusJakartaSans-Bold.ttf';
+const fontRegularPath = '/tmp/PlusJakartaSans-Medium.ttf';
 
-// Endpoint API untuk Generate Bukti Transaksi (Mengembalikan format PNG)
-app.get('/api/generate', (req, res) => {
+// Fungsi helper untuk mengunduh font secara aman sebelum rendering pertama kali
+function downloadFont(url, dest) {
+    return new Promise((resolve, reject) => {
+        if (fs.existsSync(dest)) {
+            return resolve();
+        }
+        const file = fs.createWriteStream(dest);
+        https.get(url, (response) => {
+            response.pipe(file);
+            file.on('finish', () => {
+                file.close();
+                resolve();
+            });
+        }).on('error', (err) => {
+            fs.unlink(dest, () => {});
+            reject(err);
+        });
+    });
+}
+
+// Inisialisasi register font pendukung agar teks tidak kotak-kotak di Vercel
+let fontsLoaded = false;
+async function loadFonts() {
+    if (fontsLoaded) return;
+    try {
+        // Download font Plus Jakarta Sans dari Google Fonts CDN secara dinamis
+        await downloadFont(
+            'https://raw.githubusercontent.com/google/fonts/main/ofl/plusjakartasans/PlusJakartaSans%5Bwght%5D.ttf',
+            fontRegularPath
+        );
+        registerFont(fontRegularPath, { family: 'PlusJakartaSans' });
+        fontsLoaded = true;
+        console.log("Fonts loaded successfully!");
+    } catch (e) {
+        console.error("Gagal memuat custom fonts, menggunakan fallback default", e);
+    }
+}
+
+// API Key Rahasia Owner
+const OWNER_API_KEY = "fajarganzz";
+
+// Endpoint API untuk Generate Bukti Transaksi
+app.get('/api/generate', async (req, res) => {
     const {
         price,
         buyer,
@@ -31,7 +75,7 @@ app.get('/api/generate', (req, res) => {
     if (!apikey || apikey !== OWNER_API_KEY) {
         return res.status(401).json({
             status: false,
-            message: "API Key tidak valid atau tidak disertakan! Hubungi @FazzGanteng untuk mendapatkan API Key resmi."
+            message: "API Key tidak valid! Hubungi @FazzGanteng untuk mendapatkan API Key resmi."
         });
     }
 
@@ -43,162 +87,201 @@ app.get('/api/generate', (req, res) => {
         });
     }
 
-    // Default nilai opsional jika tidak diisi
+    // Pastikan font sudah terunduh sebelum menggambar
+    await loadFonts();
+
     const displayDate = date || new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) + ' WIB';
     const displayOwnerUsername = owner_username ? `@${owner_username.replace('@', '')}` : '@fazzganteng';
 
     try {
-        // Set ukuran canvas (lebar x tinggi)
-        const width = 500;
-        const height = 750;
+        // Set ukuran canvas premium (520 x 780)
+        const width = 520;
+        const height = 780;
         const canvas = createCanvas(width, height);
         const ctx = canvas.getContext('2d');
 
-        // Skema Warna berdasarkan Pilihan Template
-        let primaryColor = '#3B82F6'; // Default Blue
-        let secondaryColor = '#EFF6FF';
-        let accentColor = '#10B981'; // Green untuk tanda sukses
+        // Font Family yang diregister
+        const fontSans = fontsLoaded ? 'PlusJakartaSans' : 'sans-serif';
 
-        if (template === 'emerald') {
-            primaryColor = '#10B981';
-            secondaryColor = '#ECFDF5';
+        // Konfigurasi Tema Warna Premium
+        let primaryColor = '#1e293b'; // Default Slate-Dark
+        let gradientStart = '#2563eb'; // Royal Blue
+        let gradientEnd = '#1d4ed8';
+        let lightBg = '#f8fafc';
+        let badgeColor = '#3b82f6';
+
+        if (template === 'blue') {
+            gradientStart = '#2563eb';
+            gradientEnd = '#1d4ed8';
+            badgeColor = '#3b82f6';
+        } else if (template === 'emerald') {
+            gradientStart = '#059669';
+            gradientEnd = '#047857';
+            badgeColor = '#10b981';
         } else if (template === 'violet') {
-            primaryColor = '#8B5CF6';
-            secondaryColor = '#F5F3FF';
-        } else if (template === 'dark') {
-            primaryColor = '#1F2937';
-            secondaryColor = '#F3F4F6';
+            gradientStart = '#7c3aed';
+            gradientEnd = '#6d28d9';
+            badgeColor = '#8b5cf6';
         }
 
-        // --- BACKGROUND ---
-        ctx.fillStyle = '#FFFFFF';
+        // --- 1. BACKGROUND UTAMA ---
+        ctx.fillStyle = '#f1f5f9'; // Latar belakang abu-abu sangat muda/mewah
         ctx.fillRect(0, 0, width, height);
 
-        // --- HEADER GRADIENT BAND ---
-        const gradient = ctx.createLinearGradient(0, 0, width, 180);
-        gradient.addColorStop(0, primaryColor);
-        gradient.addColorStop(1, adjustColorBrightness(primaryColor, -20));
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, width, 180);
+        // --- 2. CARD UTAMA (STRUK) DENGAN ROUNDED CORNERS & SHADOW ---
+        const cardX = 30;
+        const cardY = 30;
+        const cardWidth = width - 60;
+        const cardHeight = height - 80;
+        const radius = 24;
 
-        // --- DRAW SUCCESS BADGE & ICON (Logo FazzPay Sederhana) ---
-        // Lingkaran Putih Tengah Atas
-        ctx.beginPath();
-        ctx.arc(width / 2, 100, 45, 0, Math.PI * 2);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fill();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetY = 4;
-        ctx.fill();
-        ctx.shadowColor = 'transparent'; // Reset shadow
+        // Gambar bayangan halus (soft shadow) secara manual
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
+        roundRect(ctx, cardX + 2, cardY + 6, cardWidth, cardHeight, radius, true, false);
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.04)';
+        roundRect(ctx, cardX, cardY + 3, cardWidth, cardHeight, radius, true, false);
 
-        // Icon Centang Sukses (Warna Hijau Sukses)
-        ctx.beginPath();
-        ctx.arc(width / 2, 100, 35, 0, Math.PI * 2);
-        ctx.fillStyle = accentColor;
-        ctx.fill();
+        // Gambar card putih utama
+        ctx.fillStyle = '#ffffff';
+        roundRect(ctx, cardX, cardY, cardWidth, cardHeight, radius, true, false);
 
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 5;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.beginPath();
-        ctx.moveTo(width / 2 - 12, 100);
-        ctx.lineTo(width / 2 - 3, 109);
-        ctx.lineTo(width / 2 + 13, 91);
-        ctx.stroke();
+        // --- 3. HEADER GRADIENT BAND (BAGIAN ATAS STRUK) ---
+        const headerHeight = 140;
+        ctx.save();
+        // Clip header agar mengikuti kelengkungan card putih
+        roundRect(ctx, cardX, cardY, cardWidth, cardHeight, radius, false, true);
+        
+        const grad = ctx.createLinearGradient(cardX, cardY, cardX + cardWidth, cardY + headerHeight);
+        grad.addColorStop(0, gradientStart);
+        grad.addColorStop(1, gradientEnd);
+        ctx.fillStyle = grad;
+        ctx.fillRect(cardX, cardY, cardWidth, headerHeight);
+        ctx.restore();
 
-        // --- APP TITLE (FazzPay) ---
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 24px Arial, Helvetica, sans-serif';
+        // --- 4. LOGO & TEKS HEADER ---
+        ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
-        ctx.fillText('FAZZPAY', width / 2, 45);
+        
+        // Brand Title
+        ctx.font = `800 20px ${fontSans}`;
+        ctx.fillText('FAZZPAY', width / 2, cardY + 45);
 
         // Subtitle Transaksi Sukses
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-        ctx.font = '13px Arial, Helvetica, sans-serif';
-        ctx.fillText('TRANSAKSI BERHASIL', width / 2, 160);
+        ctx.font = `600 11px ${fontSans}`;
+        ctx.fillText('BUKTI TRANSAKSI SUKSES', width / 2, cardY + 68);
 
-        // --- KONTEN DETAIL TRANSAKSI ---
-        let currentY = 220;
+        // --- 5. LINGKARAN CENTANG SUKSES ---
+        const iconY = cardY + headerHeight;
+        ctx.beginPath();
+        ctx.arc(width / 2, iconY, 36, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        
+        // Shadow lingkaran centang
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.stroke();
 
-        // Teks Nominal Utama
-        ctx.fillStyle = '#111827';
-        ctx.font = 'bold 32px Arial, Helvetica, sans-serif';
+        ctx.beginPath();
+        ctx.arc(width / 2, iconY, 30, 0, Math.PI * 2);
+        ctx.fillStyle = '#10b981'; // Hijau Sukses
+        ctx.fill();
+
+        // Centang Putih di dalam lingkaran hijau
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(width / 2 - 10, iconY);
+        ctx.lineTo(width / 2 - 2, iconY + 8);
+        ctx.lineTo(width / 2 + 10, iconY - 6);
+        ctx.stroke();
+
+        // --- 6. HARGA & NAMA PRODUK ---
+        let currentY = iconY + 65;
+        
+        // Nominal Pembayaran
+        ctx.fillStyle = '#0f172a'; // Slate 900
+        ctx.font = `800 28px ${fontSans}`;
         ctx.textAlign = 'center';
         ctx.fillText(`Rp ${formatRupiah(price)}`, width / 2, currentY);
 
-        currentY += 40;
+        currentY += 24;
 
-        // Nama Produk di bawah nominal
-        ctx.fillStyle = '#4B5563';
-        ctx.font = '15px Arial, Helvetica, sans-serif';
-        ctx.fillText(product, width / 2, currentY);
+        // Label Produk
+        ctx.fillStyle = '#64748b'; // Slate 500
+        ctx.font = `600 13px ${fontSans}`;
+        ctx.fillText(product.toUpperCase(), width / 2, currentY);
 
-        // Pembatas Dekoratif Gergaji / Garis Putus-putus
-        currentY += 30;
-        ctx.strokeStyle = '#E5E7EB';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 4]);
+        // --- 7. PEMBATAS GARIS PUTUS-PUTUS ---
+        currentY += 28;
+        ctx.strokeStyle = '#cbd5e1'; // Slate 300
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 5]);
         ctx.beginPath();
-        ctx.moveTo(40, currentY);
-        ctx.lineTo(width - 40, currentY);
+        ctx.moveTo(cardX + 25, currentY);
+        ctx.lineTo(cardX + cardWidth - 25, currentY);
         ctx.stroke();
-        ctx.setLineDash([]); // Reset line dash
+        ctx.setLineDash([]); // Reset agar garis lain normal
 
-        // --- LIST DETAIL (Grid Key-Value Style) ---
-        currentY += 40;
-        const drawRow = (label, value, isBold = false) => {
+        // --- 8. BAGIAN DETAIL TRANSAKSI (KEY-VALUE GRID) ---
+        currentY += 35;
+        const paddingLeft = cardX + 30;
+        const paddingRight = cardX + cardWidth - 30;
+
+        const drawInfoRow = (label, value, isHighlighted = false) => {
+            // Label di sisi kiri
             ctx.textAlign = 'left';
-            ctx.fillStyle = '#6B7280';
-            ctx.font = '14px Arial, Helvetica, sans-serif';
-            ctx.fillText(label, 50, currentY);
+            ctx.fillStyle = '#64748b'; // Slate 500
+            ctx.font = `600 12px ${fontSans}`;
+            ctx.fillText(label, paddingLeft, currentY);
 
+            // Value di sisi kanan
             ctx.textAlign = 'right';
-            ctx.fillStyle = isBold ? '#111827' : '#374151';
-            ctx.font = isBold ? 'bold 14px Arial, Helvetica, sans-serif' : '14px Arial, Helvetica, sans-serif';
-            ctx.fillText(value, width - 50, currentY);
+            if (isHighlighted) {
+                ctx.fillStyle = badgeColor;
+                ctx.font = `700 13px ${fontSans}`;
+            } else {
+                ctx.fillStyle = '#334155'; // Slate 700
+                ctx.font = `700 12px ${fontSans}`;
+            }
+            ctx.fillText(value, paddingRight, currentY);
 
-            currentY += 35;
+            currentY += 34; // Spasi antar baris
         };
 
-        drawRow('No. Transaksi', tx_id, true);
-        drawRow('Waktu Transaksi', displayDate);
-        drawRow('Nama Pembeli', buyer);
-        drawRow('Metode Pembayaran', 'FazzPay Saldo');
-        drawRow('Nama Merchant / Owner', owner_name);
-        drawRow('Username Owner', displayOwnerUsername);
-        drawRow('Status', 'SUKSES / PAID', true);
+        drawInfoRow('ID Transaksi', tx_id);
+        drawInfoRow('Tanggal Transaksi', displayDate);
+        drawInfoRow('Pelanggan / Pembeli', buyer);
+        drawInfoRow('Metode Pembayaran', 'FazzPay Saldo');
+        drawInfoRow('Nama Merchant', owner_name);
+        drawInfoRow('Kontak Telegram', displayOwnerUsername, true);
+        drawInfoRow('Status Transaksi', 'BERHASIL / PAID');
 
-        // --- FOOTER & WATERMARK ---
-        currentY = height - 100;
-        
-        // Garis Pembatas Bawah
-        ctx.strokeStyle = '#F3F4F6';
+        // --- 9. GARIS PEMBATAS FOOTER ---
+        currentY = cardY + cardHeight - 85;
+        ctx.strokeStyle = '#f1f5f9';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(40, currentY);
-        ctx.lineTo(width - 40, currentY);
+        ctx.moveTo(cardX + 25, currentY);
+        ctx.lineTo(cardX + cardWidth - 25, currentY);
         ctx.stroke();
 
+        // --- 10. TANDA AIR / WATERMARK (fazzpaypic.vercel.app) ---
         currentY += 35;
-        
-        // Terima kasih
-        ctx.fillStyle = '#9CA3AF';
-        ctx.font = 'italic 12px Arial, Helvetica, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Terima kasih telah menggunakan layanan kami.', width / 2, currentY);
+        ctx.fillStyle = '#94a3b8'; // Slate 400
+        ctx.font = `500 11px ${fontSans}`;
+        ctx.fillText('Terima kasih atas kepercayaan Anda.', width / 2, currentY);
 
-        currentY += 25;
-
-        // WATERMARK UTAMA (fazzpaypic.vercel.app)
-        ctx.fillStyle = primaryColor;
-        ctx.font = 'bold 13px Arial, Helvetica, sans-serif';
-        ctx.textAlign = 'center';
+        currentY += 18;
+        ctx.fillStyle = gradientStart;
+        ctx.font = `800 12px ${fontSans}`;
         ctx.fillText('fazzpaypic.vercel.app', width / 2, currentY);
 
-        // Kirim response berupa PNG Buffer langsung
+        // Kembalikan sebagai stream PNG
         const buffer = canvas.toBuffer('image/png');
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Cache-Control', 'public, max-age=86400');
@@ -208,11 +291,43 @@ app.get('/api/generate', (req, res) => {
         console.error(error);
         return res.status(500).json({
             status: false,
-            message: "Gagal merender gambar bukti transaksi.",
+            message: "Gagal merender gambar bukti transaksi dengan font eksternal.",
             error: error.message
         });
     }
 });
+
+// Helper: Membuat rounded rectangle pada Canvas
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+    if (typeof radius === 'undefined') {
+        radius = 5;
+    }
+    if (typeof radius === 'number') {
+        radius = {tl: radius, tr: radius, bl: radius, br: radius};
+    } else {
+        var defaultRadius = {tl: 0, tr: 0, bl: 0, br: 0};
+        for (var side in defaultRadius) {
+            radius[side] = radius[side] || defaultRadius[side];
+        }
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius.tl, y);
+    ctx.lineTo(x + width - radius.tr, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+    ctx.lineTo(x + width, y + height - radius.br);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+    ctx.lineTo(x + radius.bl, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+    ctx.lineTo(x, y + radius.tl);
+    ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+    ctx.closePath();
+    if (fill) {
+        ctx.fill();
+    }
+    if (stroke) {
+        ctx.stroke();
+    }
+}
 
 // Helper: Format Rupiah
 function formatRupiah(angka) {
@@ -230,40 +345,10 @@ function formatRupiah(angka) {
     return split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
 }
 
-// Helper: Ubah kegelapan warna (hex) untuk gradasi dinamis
-function adjustColorBrightness(hex, percent) {
-    let R = parseInt(hex.substring(1, 3), 16);
-    let G = parseInt(hex.substring(3, 5), 16);
-    let B = parseInt(hex.substring(5, 7), 16);
-
-    R = parseInt(R * (100 + percent) / 100);
-    G = parseInt(G * (100 + percent) / 100);
-    B = parseInt(B * (100 + percent) / 100);
-
-    R = (R < 255) ? R : 255;
-    G = (G < 255) ? G : 255;
-    B = (B < 255) ? B : 255;
-
-    R = (R > 0) ? R : 0;
-    G = (G > 0) ? G : 0;
-    B = (B > 0) ? B : 0;
-
-    const rHex = R.toString(16).padStart(2, '0');
-    const gHex = G.toString(16).padStart(2, '0');
-    const bHex = B.toString(16).padStart(2, '0');
-
-    return `#${rHex}${gHex}${bHex}`;
-}
-
-// Handler Default untuk vercel function environment
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
-// Listen server jika dijalankan lokal
+// Server lokal fallback
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = app
+module.exports = app;
