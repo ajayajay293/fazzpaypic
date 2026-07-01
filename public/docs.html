@@ -7,7 +7,6 @@
     <title>Referensi Dokumentasi API FazzPay</title>
     <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Inter Family -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -19,7 +18,6 @@
 </head>
 <body class="text-[#EAF2FF] min-h-screen">
 
-    <!-- Header Navigasi -->
     <header class="border-b border-white/5 bg-[#121821] py-4">
         <div class="max-w-4xl mx-auto px-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -38,19 +36,16 @@
         </div>
     </header>
 
-    <!-- Konten Panduan API Developer -->
     <main class="max-w-4xl mx-auto px-4 py-8">
         
-        <!-- Judul -->
         <div class="mb-10">
-            <span class="text-[10px] px-2.5 py-1 rounded-full bg-[#1E90FF]/15 text-[#1E90FF] font-bold uppercase tracking-wider">REST API v1.1</span>
+            <span class="text-[10px] px-2.5 py-1 rounded-full bg-[#1E90FF]/15 text-[#1E90FF] font-bold uppercase tracking-wider">REST API v1.3</span>
             <h1 class="text-3xl font-black mt-3 text-white">Panduan Integrasi API FazzPay</h1>
             <p class="text-sm text-[#8FA3BF] mt-2 max-w-2xl">
-                Gunakan API resmi FazzPay untuk mengotomatiskan pembuatan dokumen kwitansi transfer beresolusi ultra-tinggi dalam format vektor (SVG) yang ringan untuk alur transaksi aplikasi Anda.
+                Gunakan API resmi FazzPay untuk mengotomatiskan pembuatan dokumen kwitansi transfer beresolusi ultra-tinggi dalam format PNG biner asli yang digambar langsung di backend Rust-powered Node Canvas.
             </p>
         </div>
 
-        <!-- Kotak Peringatan Keamanan API Key -->
         <div class="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
             <svg class="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -61,7 +56,6 @@
             </div>
         </div>
 
-        <!-- Spesifikasi Endpoint -->
         <section class="mb-10 space-y-4">
             <h2 class="text-xl font-bold text-white border-b border-white/5 pb-2">Definisi Endpoint</h2>
             <div class="flex items-center gap-3">
@@ -69,19 +63,17 @@
                 <span class="font-mono text-sm text-[#EAF2FF] bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">/api/generate</span>
             </div>
             <p class="text-xs text-[#8FA3BF]">
-                Menerima payload bertipe JSON dan secara langsung merespons dengan konten dokumen gambar vektor SVG berkualitas tinggi yang siap dirender atau dikonversi.
+                Menerima payload bertipe JSON dan secara langsung merespons dengan konten dokumen gambar biner PNG berkualitas tinggi.
             </p>
         </section>
 
-        <!-- Tabel Parameter Payload -->
         <section class="mb-10 space-y-4">
             <h2 class="text-xl font-bold text-white border-b border-white/5 pb-2">Parameter Payload (JSON)</h2>
-            
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs text-[#8FA3BF] border-collapse">
                     <thead>
                         <tr class="border-b border-white/10 text-[#EAF2FF]">
-                            <th class="py-2">Kolom / Variabel</th>
+                            <th class="py-2">Kolom</th>
                             <th class="py-2">Tipe</th>
                             <th class="py-2">Wajib</th>
                             <th class="py-2">Deskripsi</th>
@@ -92,13 +84,13 @@
                             <td class="py-3 font-mono text-[#00C896]">apiKey</td>
                             <td class="py-3">string</td>
                             <td class="py-3 text-red-400 font-bold">Wajib</td>
-                            <td class="py-3">Token otorisasi keamanan Anda (Gunakan kunci privat yang sah).</td>
+                            <td class="py-3">Token otorisasi keamanan Anda (Kunci standar: "fazzganzz").</td>
                         </tr>
                         <tr>
                             <td class="py-3 font-mono text-[#00C896]">amount</td>
                             <td class="py-3">string</td>
                             <td class="py-3 text-red-400 font-bold">Wajib</td>
-                            <td class="py-3">Nilai nominal transaksi (Format string, Contoh: "250.000").</td>
+                            <td class="py-3">Nilai nominal transaksi (Format string, Contoh: "500.000").</td>
                         </tr>
                         <tr>
                             <td class="py-3 font-mono text-[#00C896]">productName</td>
@@ -106,24 +98,11 @@
                             <td class="py-3 text-red-400 font-bold">Wajib</td>
                             <td class="py-3">Nama barang, langganan server, atau deskripsi jasa.</td>
                         </tr>
-                        <tr>
-                            <td class="py-3 font-mono text-[#00C896]">buyerName</td>
-                            <td class="py-3">string</td>
-                            <td class="py-3 text-red-400 font-bold">Wajib</td>
-                            <td class="py-3">Nama pengirim atau pembeli transaksi.</td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 font-mono text-[#00C896]">template</td>
-                            <td class="py-3">string</td>
-                            <td class="py-3">Opsional</td>
-                            <td class="py-3">Tema desain pilihan: <code class="text-[#1E90FF]">"minimal"</code>, <code class="text-[#1E90FF]">"fintech"</code>, atau <code class="text-[#1E90FF]">"glass"</code>.</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Contoh Struktur Request JSON -->
         <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             <div>
                 <h3 class="text-sm font-bold text-white mb-2">Struktur Payload Permintaan (JSON)</h3>
@@ -147,39 +126,16 @@
                 <div class="bg-[#121821] border border-white/5 rounded-2xl p-4 text-[11px] text-[#8FA3BF] font-mono h-full flex flex-col justify-between">
                     <div>
                         <span class="text-[#00C896] font-bold">HTTP/1.1 200 OK</span>
-                        <br>Content-Type: image/svg+xml
-                        <br>Content-Disposition: inline; filename="receipt.svg"
-                    </div>
-                    <div class="mt-4 border-t border-white/5 pt-4">
-                        <p class="text-[10px] text-amber-500">Info: Gambar akan dikirimkan dalam format XML SVG vektor yang siap dikonversi ke resolusi PNG berapapun.</p>
+                        <br>Content-Type: image/png
+                        <br>Content-Disposition: inline; filename="receipt.png"
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Penanganan Error -->
-        <section class="mb-10 space-y-4">
-            <h2 class="text-xl font-bold text-white border-b border-white/5 pb-2">Format Kegagalan Respons</h2>
-            <div class="bg-[#121821] border border-white/5 rounded-2xl p-4 font-mono text-xs">
-                <p class="text-red-400 font-bold">HTTP/1.1 401 Unauthorized</p>
-                <pre class="text-[#8FA3BF] mt-1">
-{
-  "error": "Kunci API tidak valid atau tidak diizinkan."
-}
-                </pre>
-            </div>
-        </section>
-
-        <!-- Informasi Hubungi Developer -->
         <footer class="border-t border-white/5 pt-8 mt-12 text-center">
-            <p class="text-xs text-[#8FA3BF]">
-                Untuk pengajuan kunci API khusus perusahaan atau kebutuhan kustomisasi:
-            </p>
             <p class="text-sm font-bold text-[#00C896] mt-1">
                 Kontak Telegram: <a href="https://t.me/FazzGanteng" target="_blank" class="underline">@FazzGanteng</a>
-            </p>
-            <p class="text-[10px] text-[#8FA3BF] mt-6">
-                © 2026 FazzPay Pic Inc. Hak Cipta Dilindungi Undang-Undang.
             </p>
         </footer>
 
@@ -187,4 +143,3 @@
 
 </body>
 </html>
-
