@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FazzPay Receipt Generator - Premium Fintech Tool</title>
-  <!-- Integrasi Tailwind CSS & Font Inter -->
+  <title>FazzPay Receipt Generator & API Docs</title>
+  <!-- Tailwind CSS & Inter Font -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -16,21 +16,19 @@
       letter-spacing: -0.02em;
     }
     .fintech-blur {
-      background: rgba(18, 24, 33, 0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(12px);
+      background: rgba(18, 24, 33, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
     .accent-glow:focus {
       outline: none;
       border-color: #00C896;
-      box-shadow: 0 0 14px rgba(0, 200, 150, 0.25);
+      box-shadow: 0 0 16px rgba(0, 200, 150, 0.3);
     }
-    /* Kustomisasi scrollbar halus untuk panel template */
+    code, pre {
+      font-family: 'Fira Code', monospace;
+    }
+    /* Hapus scrollbar horizontal visual */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -38,14 +36,14 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* Animasi shimmer loader */
+    /* Efek Shimmer Loading */
     @keyframes shimmer {
       100% { transform: translateX(100%); }
     }
     .shimmer-bg {
       position: relative;
       overflow: hidden;
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: rgba(255, 255, 255, 0.04);
     }
     .shimmer-bg::after {
       position: absolute;
@@ -58,10 +56,10 @@
         rgba(255, 255, 255, 0.15) 60%,
         rgba(255, 255, 255, 0) 100%
       );
-      animation: shimmer 1.6s infinite;
+      animation: shimmer 1.5s infinite;
       content: '';
     }
-    /* Animasi centang sukses */
+    /* Centang Sukses Animasi */
     @keyframes stroke {
       100% { stroke-dashoffset: 0; }
     }
@@ -75,7 +73,7 @@
     .checkmark-circle {
       stroke-dasharray: 166;
       stroke-dashoffset: 166;
-      stroke-width: 2;
+      stroke-width: 2.5;
       stroke-miterlimit: 10;
       stroke: #00C896;
       fill: none;
@@ -86,10 +84,10 @@
       height: 56px;
       border-radius: 50%;
       display: block;
-      stroke-width: 2;
+      stroke-width: 2.5;
       stroke: #fff;
       stroke-miterlimit: 10;
-      margin: 10% auto;
+      margin: 4% auto;
       box-shadow: inset 0px 0px 0px #00C896;
       animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s backwards;
     }
@@ -101,88 +99,92 @@
     }
   </style>
 </head>
-<body class="min-h-screen pb-16">
+<body class="min-h-screen pb-20">
 
-  <!-- Header Lekat dengan Efek Blur Transparan -->
-  <header class="sticky top-0 z-50 w-full fintech-blur border-b border-white/[0.06] py-4 px-6 mb-6">
+  <!-- Sticky Header Navigasi -->
+  <header class="sticky top-0 z-50 w-full fintech-blur border-b border-white/[0.06] py-3.5 px-4 mb-6">
     <div class="max-w-[420px] mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <!-- Logo SVG Premium Fintech -->
+      <div class="flex items-center gap-2">
         <svg class="w-8 h-8 text-[#00C896]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <span class="font-bold text-xl tracking-tight text-white">FazzPay <span class="text-[#00C896] text-xs px-2 py-0.5 rounded-full bg-[#00C896]/10 font-medium">Pic</span></span>
+        <span class="font-bold text-lg text-white tracking-tight">FazzPay <span class="text-[#00C896] text-xs px-2 py-0.5 rounded-full bg-[#00C896]/10 font-semibold">Pic</span></span>
       </div>
-      <a href="/docs.html" class="text-xs text-[#8FA3BF] hover:text-[#00C896] transition-colors border border-white/10 px-3 py-1.5 rounded-full bg-white/[0.02]">API Docs</a>
+
+      <!-- Tab Switcher (Generator vs API Docs) -->
+      <div class="flex bg-[#0B0F14] border border-white/10 rounded-full p-1">
+        <button onclick="switchTab('maker')" id="tabMaker" class="text-xs px-3 py-1.5 rounded-full font-medium transition-all bg-[#00C896] text-[#0B0F14]">Generator</button>
+        <button onclick="switchTab('docs')" id="tabDocs" class="text-xs px-3 py-1.5 rounded-full font-medium transition-all text-[#8FA3BF] hover:text-white">API Docs</button>
+      </div>
     </div>
   </header>
 
-  <!-- Container Utama Form Maker & Preview (Sangat optimal untuk tampilan Smartphone) -->
-  <main class="max-w-[420px] mx-auto px-4 space-y-6">
-
-    <!-- Form Kontrol Utama -->
-    <div class="bg-[#121821] rounded-2xl border border-white/[0.06] p-5 space-y-5">
+  <!-- Halaman Konten 1: Maker Dashboard -->
+  <div id="pageMaker" class="max-w-[420px] mx-auto px-4 space-y-5">
+    
+    <!-- Formulir Pembuat Struk -->
+    <div class="bg-[#121821] rounded-2xl border border-white/[0.06] p-5 space-y-4">
       <div>
-        <h2 class="text-lg font-semibold text-white">Buat Struk Transaksi</h2>
-        <p class="text-xs text-[#8FA3BF]">Isi parameter transaksi resmi di bawah untuk merender struk.</p>
+        <h2 class="text-base font-semibold text-white">Buat Struk Pembayaran</h2>
+        <p class="text-xs text-[#8FA3BF]">Ketik parameter transfer asli Anda di bawah.</p>
       </div>
 
-      <div class="space-y-4">
+      <div class="space-y-3.5">
         <!-- Input nominal uang -->
         <div>
-          <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Nominal Transfer (Format Uang)</label>
-          <input type="text" id="amount" placeholder="Rp 1.500.000,00" value="Rp 500.000,00" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 accent-glow text-sm">
+          <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Nominal Transfer</label>
+          <input type="text" id="amount" placeholder="Rp 1.500.000,00" value="Rp 500.000,00" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-4 py-2.5 text-white accent-glow text-xs font-semibold">
         </div>
 
         <!-- Detail Produk -->
         <div>
-          <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Nama Produk / Keperluan</label>
-          <input type="text" id="productName" placeholder="Pembelian Hosting Premium" value="Top Up Saldo E-Wallet" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 accent-glow text-sm">
+          <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Nama Produk / Layanan</label>
+          <input type="text" id="productName" placeholder="Top Up Saldo" value="Top Up Saldo FazzPay Pro" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-4 py-2.5 text-white accent-glow text-xs">
         </div>
 
-        <!-- Blok Pengirim -->
+        <!-- Pengirim -->
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Nama Pengirim</label>
-            <input type="text" id="buyerName" placeholder="John Doe" value="Fazz Ganteng" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-white/20 accent-glow text-xs">
+            <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Nama Pengirim</label>
+            <input type="text" id="buyerName" value="Fazz Ganteng" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white accent-glow text-xs">
           </div>
           <div>
-            <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Username Pengirim</label>
-            <input type="text" id="buyerUsername" placeholder="@john" value="@fazzganteng" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-white/20 accent-glow text-xs">
+            <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Username Pengirim</label>
+            <input type="text" id="buyerUsername" value="@fazzganteng" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white accent-glow text-xs">
           </div>
         </div>
 
-        <!-- Blok Penerima -->
+        <!-- Penerima -->
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Nama Penerima</label>
-            <input type="text" id="ownerName" placeholder="Jane Doe" value="Toko Serba Ada" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-white/20 accent-glow text-xs">
+            <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Nama Penerima</label>
+            <input type="text" id="ownerName" value="Toko Serba Ada" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white accent-glow text-xs">
           </div>
           <div>
-            <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Username Penerima</label>
-            <input type="text" id="ownerUsername" placeholder="@jane" value="@tokoserba" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-white/20 accent-glow text-xs">
+            <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Username Penerima</label>
+            <input type="text" id="ownerUsername" value="@tokoserba" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white accent-glow text-xs">
           </div>
         </div>
 
-        <!-- Detail ID Transaksi & Waktu -->
+        <!-- Transaksi & Waktu -->
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">ID Transaksi</label>
-            <input type="text" id="transactionId" placeholder="TX908129" value="FP-2026-88019" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-white/20 accent-glow text-xs">
+            <label class="block text-xs font-medium text-[#8FA3BF] mb-1">ID Transaksi</label>
+            <input type="text" id="transactionId" value="FP-2026-88019" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white accent-glow text-xs">
           </div>
           <div>
-            <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Waktu & Tanggal</label>
-            <input type="text" id="dateTime" placeholder="01 Jul 2026, 16:00" value="01 Jul 2026, 16:02" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white placeholder-white/20 accent-glow text-xs">
+            <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Tanggal & Waktu</label>
+            <input type="text" id="dateTime" value="01 Jul 2026, 16:02" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl px-3 py-2.5 text-white accent-glow text-xs">
           </div>
         </div>
 
-        <!-- Kunci API -->
+        <!-- API Key -->
         <div>
-          <label class="block text-xs font-medium text-[#8FA3BF] mb-1.5">Kunci API Terenkripsi</label>
+          <label class="block text-xs font-medium text-[#8FA3BF] mb-1">Kunci API FazzPay</label>
           <div class="relative">
-            <input type="password" id="apiKey" value="fazzganzz" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl pl-4 pr-10 py-3 text-white placeholder-white/20 accent-glow text-sm">
+            <input type="password" id="apiKey" value="fazzganzz" class="w-full bg-[#0B0F14] border border-white/10 rounded-xl pl-4 pr-10 py-2.5 text-white accent-glow text-xs font-mono">
             <button type="button" onclick="toggleApiKey()" class="absolute inset-y-0 right-3 flex items-center text-[#8FA3BF] hover:text-white">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="eye-icon">
+              <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="eye-icon">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
               </svg>
@@ -191,89 +193,84 @@
         </div>
       </div>
 
-      <!-- Pemilih Template Desain Terintegrasi (Horizontal Scrolling) -->
+      <!-- Pemilihan Tema Struk -->
       <div class="space-y-2 pt-2">
-        <label class="block text-xs font-medium text-[#8FA3BF]">Pilih Gaya Kartu Struk</label>
-        <div class="flex gap-3 overflow-x-auto pb-2 no-scrollbar" id="templateList">
+        <label class="block text-xs font-medium text-[#8FA3BF]">Gaya Desain Struk</label>
+        <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="templateList">
           
-          <!-- Template 1 -->
-          <div onclick="selectTemplate('minimal', this)" class="flex-shrink-0 w-[110px] bg-[#0B0F14] border-2 border-[#00C896] rounded-xl p-3 cursor-pointer transition-all duration-200">
-            <div class="w-full h-12 bg-[#121821] rounded-lg mb-2 flex items-center justify-center">
-              <div class="w-4 h-4 rounded-full bg-[#00C896]"></div>
+          <div onclick="selectTemplate('minimal', this)" class="flex-shrink-0 w-[110px] bg-[#0B0F14] border-2 border-[#00C896] rounded-xl p-2.5 cursor-pointer transition-all duration-150">
+            <div class="w-full h-10 bg-[#121821] rounded-lg mb-1.5 flex items-center justify-center">
+              <div class="w-3.5 h-3.5 rounded-full bg-[#00C896]"></div>
             </div>
-            <p class="text-[11px] text-center font-medium text-white">Minimal Clean</p>
+            <p class="text-[10px] text-center font-semibold text-white">Minimal Clean</p>
           </div>
 
-          <!-- Template 2 -->
-          <div onclick="selectTemplate('fintech', this)" class="flex-shrink-0 w-[110px] bg-[#0B0F14] border border-white/5 rounded-xl p-3 cursor-pointer transition-all duration-200 hover:border-white/20">
-            <div class="w-full h-12 bg-gradient-to-br from-[#060B11] to-[#0C1522] rounded-lg mb-2 flex items-center justify-center">
-              <div class="w-4 h-4 rounded-full bg-[#1E90FF]"></div>
+          <div onclick="selectTemplate('fintech', this)" class="flex-shrink-0 w-[110px] bg-[#0B0F14] border border-white/5 rounded-xl p-2.5 cursor-pointer transition-all duration-150 hover:border-white/15">
+            <div class="w-full h-10 bg-[#151D2A] rounded-lg mb-1.5 flex items-center justify-center">
+              <div class="w-3.5 h-3.5 rounded-full bg-[#1E90FF]"></div>
             </div>
-            <p class="text-[11px] text-center font-medium text-[#8FA3BF]">Fintech Premium</p>
+            <p class="text-[10px] text-center font-semibold text-[#8FA3BF]">Fintech Card</p>
           </div>
 
-          <!-- Template 3 -->
-          <div onclick="selectTemplate('glass', this)" class="flex-shrink-0 w-[110px] bg-[#0B0F14] border border-white/5 rounded-xl p-3 cursor-pointer transition-all duration-200 hover:border-white/20">
-            <div class="w-full h-12 bg-gradient-to-r from-[#090E15] via-[#13111C] to-[#05070A] rounded-lg mb-2 flex items-center justify-center">
-              <div class="w-4 h-4 rounded-full bg-[#00C896] opacity-60"></div>
+          <div onclick="selectTemplate('glass', this)" class="flex-shrink-0 w-[110px] bg-[#0B0F14] border border-white/5 rounded-xl p-2.5 cursor-pointer transition-all duration-150 hover:border-white/15">
+            <div class="w-full h-10 bg-gradient-to-tr from-[#090E15] to-[#13111C] rounded-lg mb-1.5 flex items-center justify-center">
+              <div class="w-3.5 h-3.5 rounded-full bg-[#00C896]/60"></div>
             </div>
-            <p class="text-[11px] text-center font-medium text-[#8FA3BF]">Dark Glass</p>
+            <p class="text-[10px] text-center font-semibold text-[#8FA3BF]">Dark Glass</p>
           </div>
 
         </div>
       </div>
 
-      <!-- Tombol Generate Utama -->
-      <button onclick="generateReceipt()" id="btnGenerate" class="w-full h-13 mt-4 bg-gradient-to-r from-[#00C896] to-[#029571] text-[#0B0F14] font-semibold text-sm rounded-full flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#00C896]/15 active:scale-95 transition-all duration-150">
-        <span>Render Struk (PNG)</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+      <!-- Button Render Struk -->
+      <button onclick="generateReceipt()" id="btnGenerate" class="w-full h-12 mt-2 bg-gradient-to-r from-[#00C896] to-[#02b386] text-[#0B0F14] font-bold text-xs rounded-full flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#00C896]/20 active:scale-97 transition-all duration-100">
+        <span>Render Bukti Pembayaran (PNG)</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </button>
     </div>
 
-    <!-- Kotak Notifikasi Toast Terintegrasi -->
-    <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[380px] bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-sm text-red-200 flex items-start gap-3 z-50 transition-opacity duration-300">
-      <svg class="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-      <div id="toastMessage">Terjadi kesalahan saat menghubungi API Generator.</div>
+    <!-- Toast Error Notifikasi -->
+    <div id="toast" class="hidden bg-red-500/10 border border-red-500/20 rounded-xl p-3.5 text-xs text-red-300 flex items-start gap-2.5 z-50">
+      <svg class="w-4 h-4 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+      <div id="toastMessage">Konfigurasi API tidak sah.</div>
     </div>
 
-    <!-- Area Loading Skeleton Shimmer -->
-    <div id="loadingBox" class="hidden bg-[#121821] rounded-2xl border border-white/[0.06] p-6 space-y-5 animate-pulse">
-      <div class="flex items-center justify-center py-6">
-        <div class="w-16 h-16 rounded-full bg-white/5 shimmer-bg"></div>
+    <!-- Animasi Shimmer Loading -->
+    <div id="loadingBox" class="hidden bg-[#121821] rounded-2xl border border-white/[0.06] p-6 space-y-4 animate-pulse">
+      <div class="flex items-center justify-center py-4">
+        <div class="w-14 h-14 rounded-full bg-white/5 shimmer-bg"></div>
       </div>
-      <div class="h-6 w-2/3 mx-auto rounded bg-white/5 shimmer-bg"></div>
-      <div class="h-4 w-1/2 mx-auto rounded bg-white/5 shimmer-bg"></div>
-      <div class="space-y-3 pt-6">
-        <div class="h-10 rounded bg-white/5 shimmer-bg"></div>
-        <div class="h-10 rounded bg-white/5 shimmer-bg"></div>
-        <div class="h-10 rounded bg-white/5 shimmer-bg"></div>
+      <div class="h-5 w-2/3 mx-auto rounded bg-white/5 shimmer-bg"></div>
+      <div class="h-3 w-1/2 mx-auto rounded bg-white/5 shimmer-bg"></div>
+      <div class="space-y-3 pt-4">
+        <div class="h-9 rounded bg-white/5 shimmer-bg"></div>
+        <div class="h-9 rounded bg-white/5 shimmer-bg"></div>
       </div>
     </div>
 
-    <!-- Sukses State & Preview Hasil Gambar -->
-    <div id="resultBox" class="hidden space-y-5 animate-fade-in">
+    <!-- Sukses Preview State -->
+    <div id="resultBox" class="hidden space-y-4">
       <div class="bg-[#121821] rounded-2xl border border-white/[0.06] p-4 text-center">
-        <!-- Keberhasilan Rendering -->
-        <div class="py-4">
+        <div class="py-2">
           <div class="checkmark">
             <svg class="w-14 h-14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
               <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
               <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-[#00C896] mt-2">Render Selesai</h3>
-          <p class="text-xs text-[#8FA3BF]">Gambar struk beresolusi tinggi berhasil dibuat</p>
+          <h3 class="text-sm font-semibold text-[#00C896] mt-2">Gambar Berhasil Dibuat</h3>
+          <p class="text-[11px] text-[#8FA3BF]">Teks tajam 100% bebas kotak-kotak</p>
         </div>
 
-        <!-- Frame Preview Gambar -->
-        <div class="bg-[#0B0F14] rounded-xl overflow-hidden border border-white/5 relative aspect-[9/16] p-2">
+        <!-- Frame Preview Gambar Hasil Render -->
+        <div class="bg-[#0B0F14] rounded-xl overflow-hidden border border-white/5 relative aspect-[9/16] p-2.5">
           <img id="receiptImage" src="" alt="FazzPay Digital Receipt" class="w-full h-full object-contain rounded-lg">
         </div>
       </div>
 
-      <!-- Tombol Aksi Download / Simpan -->
+      <!-- Tombol Penyimpanan -->
       <div class="flex gap-3">
-        <button onclick="downloadReceipt()" class="flex-1 h-12 bg-white text-[#0B0F14] rounded-full text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+        <button onclick="downloadReceipt()" class="flex-1 h-12 bg-white text-[#0B0F14] rounded-full text-xs font-bold hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
           Unduh PNG
         </button>
@@ -283,13 +280,105 @@
       </div>
     </div>
 
-  </main>
+  </div>
+
+  <!-- Halaman Konten 2: API Documentation Page (Terintegrasi) -->
+  <div id="pageDocs" class="hidden max-w-[540px] mx-auto px-4 space-y-6">
+    <div class="bg-[#121821] rounded-2xl border border-white/[0.06] p-5 space-y-5">
+      <div>
+        <h1 class="text-xl font-bold text-white mb-1">Developer API Docs</h1>
+        <p class="text-xs text-[#8FA3BF] leading-relaxed">Panduan lengkap mengintegrasikan modul generator struk pembayaran ke sistem Anda.</p>
+      </div>
+
+      <!-- Warning Box -->
+      <div class="bg-yellow-500/10 border border-yellow-500/25 rounded-xl p-3.5 text-xs text-yellow-300 leading-relaxed">
+        <strong class="font-bold text-yellow-400 block mb-0.5">⚠️ API KEY PROTEKSI:</strong>
+        Kunci API bersifat rahasia dan divalidasi ketat di sisi server. Gunakan kunci <code class="bg-yellow-500/10 px-1 rounded font-mono text-yellow-300">fazzganzz</code> untuk proses otentikasi.
+      </div>
+
+      <!-- Endpoint -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-white">Endpoint</h3>
+        <div class="flex items-center gap-2">
+          <span class="bg-[#00C896]/10 text-[#00C896] font-bold text-[10px] px-2 py-0.5 rounded">POST</span>
+          <code class="text-xs bg-[#0B0F14] px-2 py-1 rounded text-white border border-white/5">/api/generate</code>
+        </div>
+      </div>
+
+      <!-- Skema Parameter Payload -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-white">Request Payload (JSON)</h3>
+        <div class="bg-[#0B0F14] rounded-xl border border-white/5 p-3.5">
+          <pre class="text-[10px] text-emerald-400 overflow-x-auto">
+{
+  "apiKey": "fazzganzz",
+  "amount": "Rp 500.000,00",
+  "productName": "Sewa Server VPS",
+  "buyerName": "Fazz Ganteng",
+  "buyerUsername": "@fazzganteng",
+  "ownerName": "Toko Serba Ada",
+  "ownerUsername": "@tokoserba",
+  "transactionId": "FP-2026-88019",
+  "dateTime": "01 Jul 2026, 16:02",
+  "template": "minimal"
+}</pre>
+        </div>
+      </div>
+
+      <!-- Respon Status -->
+      <div class="space-y-3">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-white">Daftar Response</h3>
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center justify-between py-1 border-b border-white/5">
+            <span class="font-mono text-[#00C896]">200 OK</span>
+            <span class="text-[#8FA3BF]">Mengembalikan file gambar (.PNG)</span>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-white/5">
+            <span class="font-mono text-red-400">401 Unauthorized</span>
+            <span class="text-[#8FA3BF]">Kunci API tidak valid / kosong</span>
+          </div>
+          <div class="flex items-center justify-between py-1">
+            <span class="font-mono text-red-400">400 Bad Request</span>
+            <span class="text-[#8FA3BF]">Parameter penting formulir belum lengkap</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hubungi Pengembang -->
+      <div class="border-t border-white/5 pt-4 text-center text-[11px] text-[#8FA3BF] space-y-1">
+        <p>Butuh lisensi enterprise atau penambahan fitur khusus?</p>
+        <p class="font-semibold text-[#00C896]">Hubungi Pengembang: @FazzGanteng</p>
+      </div>
+    </div>
+  </div>
 
   <script>
     let activeTemplate = "minimal";
     let generatedImageBlobUrl = null;
 
-    // Sembunyikan & Tampilkan Kunci API
+    // Sistem Tab Switcher (Mulus Tanpa Muat Ulang Halaman)
+    function switchTab(tabName) {
+      const pageMaker = document.getElementById('pageMaker');
+      const pageDocs = document.getElementById('pageDocs');
+      const tabMaker = document.getElementById('tabMaker');
+      const tabDocs = document.getElementById('tabDocs');
+
+      if (tabName === 'maker') {
+        pageMaker.classList.remove('hidden');
+        pageDocs.classList.add('hidden');
+        
+        tabMaker.className = "text-xs px-3 py-1.5 rounded-full font-medium transition-all bg-[#00C896] text-[#0B0F14]";
+        tabDocs.className = "text-xs px-3 py-1.5 rounded-full font-medium transition-all text-[#8FA3BF] hover:text-white";
+      } else {
+        pageMaker.classList.add('hidden');
+        pageDocs.classList.remove('hidden');
+        
+        tabDocs.className = "text-xs px-3 py-1.5 rounded-full font-medium transition-all bg-[#00C896] text-[#0B0F14]";
+        tabMaker.className = "text-xs px-3 py-1.5 rounded-full font-medium transition-all text-[#8FA3BF] hover:text-white";
+      }
+    }
+
+    // Toggle API Key Masking
     function toggleApiKey() {
       const apiInput = document.getElementById('apiKey');
       const eyeIcon = document.getElementById('eye-icon');
@@ -302,7 +391,7 @@
       }
     }
 
-    // Ubah status keaktifan pilihan template secara visual
+    // Pilih Template dengan Gaya Visual Aktif
     function selectTemplate(name, element) {
       activeTemplate = name;
       const list = document.getElementById('templateList').children;
@@ -318,7 +407,7 @@
       element.querySelector('p').classList.add('text-white');
     }
 
-    // Tampilkan Toast Peringatan Error
+    // Menampilkan Pesan Toast Berbahaya/Error
     function showToast(message) {
       const toast = document.getElementById('toast');
       document.getElementById('toastMessage').innerText = message;
@@ -328,7 +417,7 @@
       }, 5000);
     }
 
-    // Generate Struk Pembayaran ke Backend Server
+    // Kirim Pemanggilan API Render Gambar
     async function generateReceipt() {
       const apiKey = document.getElementById('apiKey').value;
       const amount = document.getElementById('amount').value;
@@ -341,24 +430,15 @@
       const dateTime = document.getElementById('dateTime').value;
 
       if (!apiKey) {
-        showToast("Mohon isi kunci API FazzPay untuk melanjutkan.");
+        showToast("Harap masukkan Kunci API FazzPay!");
         return;
       }
 
       const payload = {
-        apiKey,
-        amount,
-        productName,
-        buyerName,
-        buyerUsername,
-        ownerName,
-        ownerUsername,
-        transactionId,
-        dateTime,
-        template: activeTemplate
+        apiKey, amount, productName, buyerName, buyerUsername,
+        ownerName, ownerUsername, transactionId, dateTime, template: activeTemplate
       };
 
-      // Tampilkan status memproses (loading shimmer)
       document.getElementById('loadingBox').classList.remove('hidden');
       document.getElementById('resultBox').classList.add('hidden');
       document.getElementById('btnGenerate').disabled = true;
@@ -371,13 +451,13 @@
         });
 
         if (response.status === 401) {
-          showToast("Kunci API salah! Gunakan kunci 'fazzganzz'");
+          showToast("Kunci API salah! Masukkan kunci: fazzganzz");
           return;
         }
 
         if (!response.ok) {
           const errData = await response.json();
-          showToast(errData.error || "Gagal menghubungi modul API");
+          showToast(errData.error || "Kesalahan internal server.");
           return;
         }
 
@@ -389,14 +469,14 @@
         generatedImageBlobUrl = URL.createObjectURL(blob);
         document.getElementById('receiptImage').src = generatedImageBlobUrl;
 
-        // Tampilkan kotak sukses setelah delay visual demi kenyamanan pengguna
+        // Tampilkan hasil sukses secara elegan
         setTimeout(() => {
           document.getElementById('loadingBox').classList.add('hidden');
           document.getElementById('resultBox').classList.remove('hidden');
-        }, 800);
+        }, 600);
 
       } catch (err) {
-        showToast("Gangguan koneksi jaringan ke server Vercel.");
+        showToast("Hubungan jaringan ke server Vercel terganggu.");
         console.error(err);
       } finally {
         document.getElementById('btnGenerate').disabled = false;
@@ -404,18 +484,18 @@
       }
     }
 
-    // Handler Pengunduhan Berkas Gambar PNG
+    // Simpan Gambar Ke File PNG Lokal
     function downloadReceipt() {
       if (!generatedImageBlobUrl) return;
       const a = document.createElement('a');
       a.href = generatedImageBlobUrl;
-      a.download = `FazzPay-Receipt-${document.getElementById('transactionId').value}.png`;
+      a.download = `FazzPay-${document.getElementById('transactionId').value}.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
     }
 
-    // Fungsi Share Menggunakan Web Share API
+    // Berbagi Bukti Pembayaran Menggunakan Web Share API
     async function shareReceipt() {
       if (!generatedImageBlobUrl) return;
       try {
@@ -426,15 +506,13 @@
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
-            title: 'FazzPay Receipt',
-            text: 'Bukti pembayaran digital resmi dari FazzPay'
+            title: 'Bukti Transfer FazzPay',
+            text: 'Berikut lampiran bukti pembayaran resmi FazzPay'
           });
         } else {
-          // Jika tidak didukung, lakukan fallback download langsung
           downloadReceipt();
         }
       } catch (err) {
-        console.log("Web Share API tidak didukung atau dibatalkan:", err);
         downloadReceipt();
       }
     }
