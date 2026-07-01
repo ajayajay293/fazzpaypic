@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FazzPay Receipt Generator - Premium Fintech Tool</title>
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter Family -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0B0F14;
+            letter-spacing: -0.015em;
+        }
+        .accent-gradient-text {
+            background: linear-gradient(135deg, #00C896 0%, #1E90FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #00C896 0%, #1E90FF 100%);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-gradient:hover {
+            box-shadow: 0 0 20px rgba(0, 200, 150, 0.45);
+            transform: translateY(-2px);
+        }
+        .btn-gradient:active {
+            transform: scale(0.97);
+        }
+        .form-focus-glow:focus {
+            outline: none;
+            border-color: #00C896;
+            box-shadow: 0 0 12px rgba(0, 200, 150, 0.25);
+        }
+        /* Custom scrollbars for templates horizontal selector */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Success checkmark draw animation */
+        @keyframes strokeDraw {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes scaleUp {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animated-check-circle {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: strokeDraw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .animated-check-mark {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: strokeDraw 0.6s 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        .success-box-pop {
+            animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="text-[#EAF2FF] min-h-screen pb-16">
+
+    <!-- Sticky Header Banner with premium blur background -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-[#0B0F14]/80 border-b border-white/5 transition-all">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#00C896] to-[#1E90FF] flex items-center justify-center shadow-lg shadow-[#00C896]/20">
+                    <svg class="w-6 h-6 text-[#0B0F14]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg tracking-tight accent-gradient-text leading-none">FAZZPAY</h1>
+                    <span class="text-[10px] text-[#8FA3BF] font-semibold uppercase tracking-widest">Receipt Lab</span>
+                </div>
+            </div>
+            
+            <a href="/docs.html" class="text-xs font-semibold px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-[#8FA3BF] hover:text-[#EAF2FF]">
+                API Docs
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container Layout (Targeted premium mobile display size: max-width 450px) -->
+    <main class="max-w-md mx-auto px-4 mt-6">
+
+        <!-- Announcement banner -->
+        <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-[#121821] to-[#1a2330] border border-white/5 shadow-xl flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="flex h-2.5 w-2.5 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C896] opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00C896]"></span>
+                </span>
+                <p class="text-xs text-[#8FA3BF]">
+                    Need API keys? Use the secret key: <span class="text-[#00C896] font-mono font-bold">fazzganzz</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Form and Action container -->
+        <section id="receipt-form-panel">
+            <div class="bg-[#121821] border border-white/5 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+                <!-- Inner decoration background subtle mesh -->
+                <div class="absolute -right-24 -top-24 w-52 h-52 bg-[#00C896]/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-24 -bottom-24 w-52 h-52 bg-[#1E90FF]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-[#EAF2FF]">Receipt Parameters</h2>
+                    <p class="text-xs text-[#8FA3BF] mt-1">Populate input values to generate instantaneous transaction templates.</p>
+                </div>
+
+                <!-- Input group panel -->
+                <form id="receiptForm" class="space-y-4">
+                    <!-- Auth Key -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Secure API Key</label>
+                        <div class="relative">
+                            <input type="password" id="apiKey" value="fazzganzz" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl px-4 py-3 text-sm text-[#EAF2FF] font-mono form-focus-glow" placeholder="Enter API Key">
+                            <button type="button" onclick="togglePass()" class="absolute right-3.5 top-3 text-[#8FA3BF] hover:text-[#EAF2FF] transition-colors">
+                                <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Row Grid: Amount & Currency -->
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Payment Amount</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-3 text-[#8FA3BF] font-bold text-sm">Rp</span>
+                                <input type="text" id="amount" value="500.000" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl pl-11 pr-4 py-3 text-sm text-[#EAF2FF] font-bold form-focus-glow" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Name -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Product / Service Name</label>
+                        <input type="text" id="productName" value="Premium SaaS Subscription Plan" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl px-4 py-3 text-sm text-[#EAF2FF] form-focus-glow" placeholder="e.g. Coffee Double Shot">
+                    </div>
+
+                    <!-- Buyer name & handle -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Buyer Name</label>
+                            <input type="text" id="buyerName" value="Alex Johnson" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl px-4 py-3 text-sm text-[#EAF2FF] form-focus-glow" placeholder="Alex">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Buyer Username</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-3 text-[#8FA3BF] text-sm">@</span>
+                                <input type="text" id="buyerUsername" value="alexj" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl pl-7 pr-3 py-3 text-sm text-[#EAF2FF] form-focus-glow" placeholder="handle">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Owner name & handle -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Merchant / Owner Name</label>
+                            <input type="text" id="ownerName" value="FazzPay Store Inc" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl px-4 py-3 text-sm text-[#EAF2FF] form-focus-glow" placeholder="FazzPay">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Merchant Handle</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-3 text-[#8FA3BF] text-sm">@</span>
+                                <input type="text" id="ownerUsername" value="fazzpay" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl pl-7 pr-3 py-3 text-sm text-[#EAF2FF] form-focus-glow" placeholder="handle">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transaction ID & Date Time -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Transaction ID</label>
+                        <div class="relative">
+                            <input type="text" id="transactionId" value="TXN-90238129841-FAZZ" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl pl-4 pr-24 py-3 text-sm text-[#EAF2FF] font-mono form-focus-glow" placeholder="TXN-XYZ">
+                            <button type="button" onclick="randomizeTxId()" class="absolute right-2 top-2 bg-white/5 border border-white/10 hover:bg-white/15 px-2.5 py-1.5 rounded-xl text-xs text-[#00C896] transition-all">
+                                Randomize
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Date & Time picker -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Timestamp</label>
+                        <input type="datetime-local" id="dateTime" required class="w-full bg-[#0B0F14] border border-white/10 rounded-2xl px-4 py-3 text-sm text-[#EAF2FF] form-focus-glow">
+                    </div>
+
+                    <!-- Template Theme Selector label -->
+                    <div class="space-y-2 pt-2">
+                        <label class="block text-xs font-semibold text-[#8FA3BF] uppercase tracking-wider">Select Receipt Canvas Theme</label>
+                        <!-- Horizontal Scroll Container -->
+                        <div class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar snap-x">
+                            
+                            <!-- Template Option 1 -->
+                            <div onclick="selectTheme('minimal')" id="theme-card-minimal" class="snap-start shrink-0 w-[140px] cursor-pointer rounded-2xl p-3.5 bg-[#0B0F14] border-2 border-[#00C896] transition-all duration-300">
+                                <div class="w-full h-20 rounded-lg bg-gradient-to-b from-[#121821] to-[#1e293b] mb-2 flex items-center justify-center relative overflow-hidden">
+                                    <div class="w-12 h-16 bg-[#121821]/90 rounded border border-[#00C896]/30 flex flex-col justify-between p-1">
+                                        <div class="w-2 h-2 rounded-full bg-[#00C896]"></div>
+                                        <div class="h-1 w-full bg-white/20 rounded"></div>
+                                        <div class="h-1 w-2/3 bg-white/20 rounded"></div>
+                                        <div class="h-1.5 w-full bg-[#00C896]/30 rounded"></div>
+                                    </div>
+                                </div>
+                                <h4 class="text-xs font-bold text-center text-[#EAF2FF]">Minimal Clean</h4>
+                                <p class="text-[9px] text-center text-[#8FA3BF] mt-0.5">High Contrast</p>
+                            </div>
+
+                            <!-- Template Option 2 -->
+                            <div onclick="selectTheme('fintech')" id="theme-card-fintech" class="snap-start shrink-0 w-[140px] cursor-pointer rounded-2xl p-3.5 bg-[#0B0F14] border-2 border-transparent transition-all duration-300 hover:border-white/10">
+                                <div class="w-full h-20 rounded-lg bg-gradient-to-b from-[#00C896] to-[#1E90FF] mb-2 flex items-center justify-center relative overflow-hidden">
+                                    <div class="w-12 h-16 bg-[#121A26] rounded border border-white/20 flex flex-col justify-between p-1">
+                                        <div class="h-3 w-full bg-gradient-to-r from-[#00C896] to-[#1E90FF] rounded-sm"></div>
+                                        <div class="h-1 w-full bg-white/20 rounded"></div>
+                                        <div class="h-1 w-2/3 bg-[#00C896]/80 rounded"></div>
+                                        <div class="h-1 w-1/3 bg-white/10 rounded"></div>
+                                    </div>
+                                </div>
+                                <h4 class="text-xs font-bold text-center text-[#EAF2FF]">Fintech Card</h4>
+                                <p class="text-[9px] text-center text-[#8FA3BF] mt-0.5">Stripe Gradient</p>
+                            </div>
+
+                            <!-- Template Option 3 -->
+                            <div onclick="selectTheme('glass')" id="theme-card-glass" class="snap-start shrink-0 w-[140px] cursor-pointer rounded-2xl p-3.5 bg-[#0B0F14] border-2 border-transparent transition-all duration-300 hover:border-white/10">
+                                <div class="w-full h-20 rounded-lg bg-[#05070a] mb-2 flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-radial-gradient from-teal-500/20 to-transparent"></div>
+                                    <div class="w-12 h-16 bg-white/5 backdrop-blur-md rounded border border-white/20 flex flex-col justify-between p-1">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-[#00C896] animate-pulse"></div>
+                                        <div class="h-1 w-full bg-white/30 rounded"></div>
+                                        <div class="h-1 w-2/3 bg-white/10 rounded"></div>
+                                        <div class="h-1 w-1/2 bg-white/30 rounded"></div>
+                                    </div>
+                                </div>
+                                <h4 class="text-xs font-bold text-center text-[#EAF2FF]">Dark Glass</h4>
+                                <p class="text-[9px] text-center text-[#8FA3BF] mt-0.5">Glassmorphism</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="selectedTemplate" value="minimal">
+
+                    <!-- Big Render Call Trigger -->
+                    <button type="button" id="btnGenerate" onclick="processReceiptRender()" class="btn-gradient w-full py-4 text-sm font-bold text-[#0B0F14] rounded-full mt-4 flex items-center justify-center gap-2">
+                        <span>RENDER INSTANT RECEIPT</span>
+                        <svg class="w-5 h-5 text-[#0B0F14]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Dynamic Success State & Image Output Panel -->
+        <section id="result-panel" class="hidden mt-8 space-y-4">
+            <!-- Glass Result Panel Wrapper -->
+            <div class="bg-[#121821] border border-white/5 rounded-3xl p-6 shadow-2xl relative">
+                
+                <!-- Successful Processing State Indicator -->
+                <div id="loading-animation-block" class="py-12 flex flex-col items-center justify-center text-center">
+                    <svg class="w-24 h-24 text-[#00C896] mb-4" viewBox="0 0 100 100" fill="none">
+                        <!-- Background Circle -->
+                        <circle cx="50" cy="50" r="45" stroke="rgba(255,255,255,0.05)" stroke-width="5" />
+                        <!-- Success animation circles -->
+                        <circle class="animated-check-circle" cx="50" cy="50" r="45" stroke="#00C896" stroke-width="5" stroke-linecap="round" />
+                        <!-- Animated Check -->
+                        <path class="animated-check-mark" d="M30 50 L45 65 L70 35" stroke="#EAF2FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <h3 class="text-lg font-bold text-[#EAF2FF]">Structuring Ultra-HD Layout</h3>
+                    <p class="text-xs text-[#8FA3BF] max-w-[280px] mx-auto mt-1">Generating 1080x1920 portrait payment success proof with secure fazzpay watermark.</p>
+                    
+                    <!-- Beautiful shimmer loading indicators -->
+                    <div class="w-full max-w-[260px] space-y-3 mt-6">
+                        <div class="h-3 w-full bg-white/5 overflow-hidden relative rounded-full">
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#00C896]/20 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]"></div>
+                        </div>
+                        <div class="h-3 w-3/4 bg-white/5 overflow-hidden relative rounded-full mx-auto">
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#1E90FF]/20 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom keyframes loader inline helper -->
+                <style>
+                    @keyframes shimmer {
+                        100% { transform: translateX(100%); }
+                    }
+                </style>
+
+                <!-- Final Sharp Receipt Canvas Rendering Display -->
+                <div id="preview-render-block" class="hidden space-y-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <span class="text-[10px] px-2.5 py-1 rounded-full bg-[#00C896]/15 text-[#00C896] font-bold uppercase tracking-wider">Success</span>
+                            <span class="text-xs text-[#8FA3BF] ml-2">Perfect 1080x1920 portrait</span>
+                        </div>
+                        <button onclick="backToSettings()" class="text-xs font-semibold text-[#8FA3BF] hover:text-[#00C896] transition-colors flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" /></svg>
+                            Modify Data
+                        </button>
+                    </div>
+
+                    <!-- Lock Aspect ratio precisely to present the output clearly -->
+                    <div class="rounded-2xl border border-white/10 overflow-hidden bg-[#0B0F14] p-3 shadow-inner relative group">
+                        <img id="receipt-result-img" class="w-full h-auto max-h-[550px] object-contain mx-auto rounded-lg transition-all duration-300" src="" alt="FazzPay Secure Payment Proof">
+                    </div>
+
+                    <!-- Direct actionable triggers -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <!-- Direct high resolution PNG download -->
+                        <button id="btnDownload" onclick="downloadGeneratedImage()" class="py-3.5 px-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-sm font-bold text-[#EAF2FF] transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5 text-[#8FA3BF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            <span>Save Image</span>
+                        </button>
+                        
+                        <!-- Premium system share if compatible -->
+                        <button id="btnShare" onclick="shareGeneratedImage()" class="py-3.5 px-4 rounded-full bg-gradient-to-r from-[#00C896] to-[#00A383] text-[#0B0F14] text-sm font-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#00C896]/15 hover:shadow-[#00C896]/30">
+                            <svg class="w-5 h-5 text-[#0B0F14]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 10.742l4.61 2.305m0 0l4.61-2.305m-4.61 2.305V19M12 5a3 3 0 110 6 3 3 0 010-6z" /></svg>
+                            <span>Share Receipt</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Global Screen Toast Alert System -->
+    <div id="toast-wrapper" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] max-w-sm w-[90%] transition-all duration-300 pointer-events-none transform translate-y-20 opacity-0">
+        <div class="bg-gradient-to-r from-red-600 to-red-500 border border-red-400 text-white rounded-2xl px-5 py-4 shadow-2xl flex items-center gap-3">
+            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+                <h4 class="font-bold text-sm">Processing Error</h4>
+                <p id="toast-message" class="text-xs text-white/90">Please fill out all receipt details precisely.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Frontend Interactive Logic Script -->
+    <script>
+        // Synchronously set local datetime fields on load for instant modern UX
+        window.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            // Format to match local datetime-local format
+            const formatted = now.toISOString().slice(0, 16);
+            document.getElementById('dateTime').value = formatted;
+        });
+
+        // Toggle secure password visibility
+        function togglePass() {
+            const el = document.getElementById('apiKey');
+            const icon = document.getElementById('eyeIcon');
+            if (el.type === 'password') {
+                el.type = 'text';
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M21 21l-3-3m-3.308-3.308a3 3 0 01-4.244-4.244M19.82 12.932A10.402 10.402 0 0021.02 12c-1.291-4.338-5.308-7.5-10.02-7.5c-.958 0-1.888.13-2.768.375M3 3l18 18" />`;
+            } else {
+                el.type = 'password';
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+            }
+        }
+
+        // Randomize Reference transaction ID for high-end look
+        function randomizeTxId() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let randomCode = '';
+            for (let i = 0; i < 12; i++) {
+                randomCode += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('transactionId').value = `TXN-${randomCode}-FAZZ`;
+        }
+
+        // Horizontal visual state selection update
+        function selectTheme(themeName) {
+            document.getElementById('selectedTemplate').value = themeName;
+            
+            // Remove active style from all elements
+            ['minimal', 'fintech', 'glass'].forEach(name => {
+                const el = document.getElementById(`theme-card-${name}`);
+                if (el) {
+                    el.classList.remove('border-[#00C896]', 'border-2');
+                    el.classList.add('border-2', 'border-transparent');
+                }
+            });
+
+            // Set active focus style
+            const activeEl = document.getElementById(`theme-card-${themeName}`);
+            if (activeEl) {
+                activeEl.classList.remove('border-transparent');
+                activeEl.classList.add('border-[#00C896]');
+            }
+        }
+
+        // Toast trigger helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast-wrapper');
+            const message = document.getElementById('toast-message');
+            message.innerText = msg;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 4500);
+        }
+
+        // Perform AJAX generation call
+        let globalImageUrl = '';
+
+        async function processReceiptRender() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const amount = document.getElementById('amount').value.trim();
+            const buyerName = document.getElementById('buyerName').value.trim();
+            const buyerUsername = document.getElementById('buyerUsername').value.trim();
+            const ownerName = document.getElementById('ownerName').value.trim();
+            const ownerUsername = document.getElementById('ownerUsername').value.trim();
+            const transactionId = document.getElementById('transactionId').value.trim();
+            const productName = document.getElementById('productName').value.trim();
+            const dateTime = document.getElementById('dateTime').value.trim();
+            const template = document.getElementById('selectedTemplate').value;
+
+            if (!apiKey || !amount || !buyerName || !ownerName || !transactionId || !productName) {
+                showToast("All field blocks must be completed before generation.");
+                return;
+            }
+
+            // Enter loading visual mode
+            document.getElementById('receipt-form-panel').classList.add('hidden');
+            document.getElementById('result-panel').classList.remove('hidden');
+            document.getElementById('loading-animation-block').classList.remove('hidden');
+            document.getElementById('preview-render-block').classList.add('hidden');
+
+            try {
+                // Post details as JSON payload
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        apiKey,
+                        amount,
+                        buyerName,
+                        buyerUsername,
+                        ownerName,
+                        ownerUsername,
+                        transactionId,
+                        productName,
+                        dateTime,
+                        template
+                    })
+                });
+
+                if (!response.ok) {
+                    const errRes = await response.json();
+                    throw new Error(errRes.error || "Generation error.");
+                }
+
+                // Convert response direct stream blob into beautiful Object URL 
+                const imageBlob = await response.blob();
+                const localUrl = URL.createObjectURL(imageBlob);
+                globalImageUrl = localUrl;
+
+                // Load image into DOM and present layout safely
+                const imageElement = document.getElementById('receipt-result-img');
+                imageElement.src = localUrl;
+                imageElement.onload = () => {
+                    setTimeout(() => {
+                        document.getElementById('loading-animation-block').classList.add('hidden');
+                        document.getElementById('preview-render-block').classList.remove('hidden');
+                        document.getElementById('preview-render-block').classList.add('success-box-pop');
+                    }, 1200); // Give checkmark animation a premium moment to complete
+                };
+
+            } catch (err) {
+                // Return gracefully to parameters
+                showToast(err.message || "Failed to reach generator backend.");
+                setTimeout(() => {
+                    backToSettings();
+                }, 1000);
+            }
+        }
+
+        function backToSettings() {
+            document.getElementById('receipt-form-panel').classList.remove('hidden');
+            document.getElementById('result-panel').classList.add('hidden');
+        }
+
+        // Direct download execution
+        function downloadGeneratedImage() {
+            if (!globalImageUrl) return;
+            const a = document.createElement('a');
+            a.href = globalImageUrl;
+            a.download = `FazzPay-Receipt-${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Share capability integration
+        async function shareGeneratedImage() {
+            if (!globalImageUrl) return;
+            try {
+                const response = await fetch(globalImageUrl);
+                const blob = await response.blob();
+                const file = new File([blob], 'FazzPay-Receipt.png', { type: blob.type });
+
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Payment Verification Proof',
+                        text: 'FazzPay Secure Transaction Invoice'
+                    });
+                } else {
+                    // Fallback clipboard logic
+                    document.execCommand('copy');
+                    showToast("Receipt saved! Use direct download on this device.");
+                }
+            } catch (err) {
+                showToast("Sharing failed. Use 'Save Image' instead.");
+            }
+        }
+    </script>
+</body>
+</html>
