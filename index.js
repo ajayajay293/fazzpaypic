@@ -1,15 +1,41 @@
 
-// Backend Serverless FazzPay - Menghasilkan Bukti Transfer Berbasis Vektor SVG HD
+// Backend Serverless FazzPay - Menggunakan @napi-rs/canvas (Rust Engine) untuk Kecepatan Tinggi & Bebas Crash di Vercel
 const express = require('express');
+const { createCanvas } = require('@napi-rs/canvas');
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Kunci API Rahasia yang divalidasi dengan ketat
+// API Key Rahasia
 const REQUIRED_API_KEY = "fazzganzz";
 
-// Endpoint API Pembuat Bukti Transfer
+// Fungsi pembantu untuk membuat kotak melengkung (Rounded Rectangle) dengan bayangan berkualitas tinggi
+function drawRoundedRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle, strokeWidth) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    
+    if (fillStyle) {
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+    }
+    if (strokeStyle) {
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = strokeWidth;
+        ctx.stroke();
+    }
+}
+
+// Endpoint API Pembuat Bukti Transfer PNG Ultra HD (2160 x 3840 Pixel)
 app.post('/api/generate', (req, res) => {
     const {
         apiKey,
@@ -24,7 +50,7 @@ app.post('/api/generate', (req, res) => {
         template = 'minimal'
     } = req.body;
 
-    // Validasi Keamanan API Key secara ketat
+    // Validasi Keamanan API Key
     if (!apiKey || apiKey !== REQUIRED_API_KEY) {
         return res.status(401).json({ error: "Kunci API tidak valid atau tidak diizinkan." });
     }
@@ -34,220 +60,395 @@ app.post('/api/generate', (req, res) => {
         return res.status(400).json({ error: "Semua parameter transaksi wajib diisi." });
     }
 
-    const formattedDateTime = dateTime ? dateTime.replace('T', ' ') : new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const displayBuyer = `@${buyerUsername || 'buyer'}`;
-    const displayOwner = `@${ownerUsername || 'owner'}`;
+    try {
+        // Skala 2x dari 1080x1920 untuk detail Ultra HD 4K (2160 x 3840) agar tidak burik
+        const width = 2160;
+        const height = 3840;
+        const canvas = createCanvas(width, height);
+        const ctx = canvas.getContext('2d');
 
-    let svgContent = '';
+        // Optimasi Anti-Aliasing Teks dan Gambar
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
 
-    // Render Template SVG dengan resolusi dasar tinggi (1080x1920) & Styling Font Anti-Burik
-    if (template === 'glass') {
-        svgContent = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
-            <defs>
-                <style>
-                    .font-base { font-family: 'SF Pro Display', -apple-system, 'Inter', sans-serif; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
-                    .font-bold { font-weight: 700; }
-                    .font-black { font-weight: 900; }
-                </style>
-                <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#06090E" />
-                    <stop offset="50%" stop-color="#0B121E" />
-                    <stop offset="100%" stop-color="#05070A" />
-                </linearGradient>
-                <radialGradient id="neonGlow1" cx="20%" cy="20%" r="60%">
-                    <stop offset="0%" stop-color="#00C896" stop-opacity="0.18" />
-                    <stop offset="100%" stop-color="#000000" stop-opacity="0" />
-                </radialGradient>
-                <radialGradient id="neonGlow2" cx="80%" cy="80%" r="70%">
-                    <stop offset="0%" stop-color="#1E90FF" stop-opacity="0.18" />
-                    <stop offset="100%" stop-color="#000000" stop-opacity="0" />
-                </radialGradient>
-                <linearGradient id="glassBorder" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.15" />
-                    <stop offset="50%" stop-color="#ffffff" stop-opacity="0.02" />
-                    <stop offset="100%" stop-color="#00C896" stop-opacity="0.3" />
-                </linearGradient>
-            </defs>
+        const formattedDateTime = dateTime ? dateTime.replace('T', ' ') : new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const displayBuyer = `@${buyerUsername || 'buyer'}`;
+        const displayOwner = `@${ownerUsername || 'owner'}`;
 
-            <!-- Latar Belakang -->
-            <rect width="1080" height="1920" fill="url(#bgGrad)" />
-            <circle cx="200" cy="300" r="600" fill="url(#neonGlow1)" />
-            <circle cx="900" cy="1400" r="700" fill="url(#neonGlow2)" />
+        // ================= TEMPLATE RENDERING (ULTRA HD STYLING) =================
+        if (template === 'glass') {
+            // --- TEMPLATE: DARK GLASS ---
+            // Background Gradasi Premium
+            const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+            bgGrad.addColorStop(0, '#06090E');
+            bgGrad.addColorStop(0.5, '#0B121E');
+            bgGrad.addColorStop(1, '#05070A');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, width, height);
 
-            <!-- Kartu Utama Glassmorphism -->
-            <rect x="100" y="220" width="880" height="1450" rx="40" ry="40" fill="#141C29" fill-opacity="0.8" stroke="url(#glassBorder)" stroke-width="3.5" />
+            // Cahaya Neon Estetis Kiri Atas
+            const radialGlow1 = ctx.createRadialGradient(400, 600, 20, 400, 600, 1200);
+            radialGlow1.addColorStop(0, 'rgba(0, 200, 150, 0.22)');
+            radialGlow1.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = radialGlow1;
+            ctx.beginPath();
+            ctx.arc(400, 600, 1200, 0, Math.PI * 2);
+            ctx.fill();
 
-            <!-- Lingkaran Status Berhasil -->
-            <circle cx="540" cy="380" r="60" fill="#00C896" fill-opacity="0.2" stroke="#00C896" stroke-width="4.5" />
-            <path d="M515 382 L532 399 L565 364" fill="none" stroke="#EAF2FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+            // Cahaya Neon Estetis Kanan Bawah
+            const radialGlow2 = ctx.createRadialGradient(1800, 2800, 20, 1800, 2800, 1400);
+            radialGlow2.addColorStop(0, 'rgba(30, 144, 255, 0.22)');
+            radialGlow2.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = radialGlow2;
+            ctx.beginPath();
+            ctx.arc(1800, 2800, 1400, 0, Math.PI * 2);
+            ctx.fill();
 
-            <!-- Header Teks -->
-            <text x="540" y="500" class="font-base font-bold" font-size="36" fill="#EAF2FF" text-anchor="middle">Pembayaran Berhasil</text>
-            <text x="540" y="550" class="font-base" font-size="24" fill="#8FA3BF" text-anchor="middle" letter-spacing="1">TOTAL NOMINAL TRANSAKSI</text>
+            // Kartu Utama Glassmorphic (Tebal, Padat, Rapi)
+            const cX = 200;
+            const cY = 440;
+            const cW = 1760;
+            const cH = 2900;
+            const cRadius = 80;
 
-            <!-- Jumlah Uang -->
-            <text x="540" y="665" class="font-base font-black" font-size="80" fill="#00C896" text-anchor="middle">Rp ${amount}</text>
+            const glassBorder = ctx.createLinearGradient(cX, cY, cX + cW, cY + cH);
+            glassBorder.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+            glassBorder.addColorStop(0.5, 'rgba(255, 255, 255, 0.03)');
+            glassBorder.addColorStop(1, 'rgba(0, 200, 150, 0.35)');
 
-            <!-- Garis Pembatas -->
-            <line x1="160" y1="720" x2="920" y2="720" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+            drawRoundedRect(ctx, cX, cY, cW, cH, cRadius, 'rgba(20, 28, 41, 0.82)', glassBorder, 7);
 
-            <!-- Detail Transaksi -->
-            <!-- Baris 1: Produk -->
-            <text x="160" y="790" class="font-base font-bold" font-size="24" fill="#8FA3BF">PRODUK / LAYANAN</text>
-            <text x="920" y="790" class="font-base font-bold" font-size="28" fill="#00C896" text-anchor="end">${productName}</text>
-            <line x1="160" y1="830" x2="920" y2="830" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="4 6" />
+            // Lingkaran Centang Sukses
+            const checkX = width / 2;
+            const checkY = cY + 320;
+            ctx.beginPath();
+            ctx.arc(checkX, checkY, 120, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 200, 150, 0.2)';
+            ctx.strokeStyle = '#00C896';
+            ctx.lineWidth = 9;
+            ctx.fill();
+            ctx.stroke();
 
-            <!-- Baris 2: ID Transaksi -->
-            <text x="160" y="920" class="font-base font-bold" font-size="24" fill="#8FA3BF">ID TRANSAKSI</text>
-            <text x="920" y="920" class="font-base font-bold" font-size="28" fill="#EAF2FF" text-anchor="end">${transactionId}</text>
-            <line x1="160" y1="960" x2="920" y2="960" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="4 6" />
+            // Simbol Centang Putih
+            ctx.beginPath();
+            ctx.moveTo(checkX - 50, checkY + 4);
+            ctx.lineTo(checkX - 16, checkY + 38);
+            ctx.lineTo(checkX + 50, checkY - 32);
+            ctx.strokeStyle = '#EAF2FF';
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
 
-            <!-- Baris 3: Pengirim -->
-            <text x="160" y="1050" class="font-base font-bold" font-size="24" fill="#8FA3BF">PENGIRIM / PEMBELI</text>
-            <text x="920" y="1050" class="font-base font-bold" font-size="28" fill="#EAF2FF" text-anchor="end">${buyerName} (${displayBuyer})</text>
-            <line x1="160" y1="1090" x2="920" y2="1090" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="4 6" />
+            // Teks Header Berhasil
+            ctx.fillStyle = '#EAF2FF';
+            ctx.font = '900 72px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Pembayaran Berhasil', checkX, checkY + 240);
 
-            <!-- Baris 4: Penerima -->
-            <text x="160" y="1180" class="font-base font-bold" font-size="24" fill="#8FA3BF">PENERIMA / MERCHANT</text>
-            <text x="920" y="1180" class="font-base font-bold" font-size="28" fill="#EAF2FF" text-anchor="end">${ownerName} (${displayOwner})</text>
-            <line x1="160" y1="1220" x2="920" y2="1220" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" stroke-dasharray="4 6" />
+            ctx.fillStyle = '#8FA3BF';
+            ctx.font = 'bold 44px sans-serif';
+            ctx.fillText('TOTAL NOMINAL TRANSAKSI', checkX, checkY + 330);
 
-            <!-- Baris 5: Waktu -->
-            <text x="160" y="1310" class="font-base font-bold" font-size="24" fill="#8FA3BF">WAKTU TRANSAKSI</text>
-            <text x="920" y="1310" class="font-base font-bold" font-size="28" fill="#EAF2FF" text-anchor="end">${formattedDateTime}</text>
+            // Teks Jumlah Nominal (Besar, Tebal, Anti-Pecah)
+            ctx.fillStyle = '#00C896';
+            ctx.font = '900 160px sans-serif';
+            ctx.fillText(`Rp ${amount}`, checkX, checkY + 540);
 
-            <!-- Kotak Jaminan Keamanan -->
-            <rect x="140" y="1420" width="800" height="110" rx="20" ry="20" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
-            <text x="540" y="1485" class="font-base" font-style="italic" font-size="24" fill="#8FA3BF" text-anchor="middle">Diverifikasi Aman oleh Jaringan Secure FazzPay</text>
+            // Pembatas Utama
+            ctx.beginPath();
+            ctx.moveTo(cX + 120, checkY + 660);
+            ctx.lineTo(cX + cW - 120, checkY + 660);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.lineWidth = 4;
+            ctx.stroke();
 
-            <!-- Watermark Footer Wajib -->
-            <text x="540" y="1820" class="font-base font-bold" font-size="22" fill="#8FA3BF" fill-opacity="0.4" text-anchor="middle">fazzpaypic.vercel.app</text>
-        </svg>
-        `;
-    } else if (template === 'fintech') {
-        svgContent = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
-            <defs>
-                <style>
-                    .font-base { font-family: 'SF Pro Display', -apple-system, 'Inter', sans-serif; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
-                    .font-bold { font-weight: 700; }
-                    .font-black { font-weight: 900; }
-                </style>
-                <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#00C896" />
-                    <stop offset="100%" stop-color="#1E90FF" />
-                </linearGradient>
-            </defs>
+            // Gambar List Detail Informasi Transaksi
+            const detailsY = checkY + 800;
+            const items = [
+                { k: 'PRODUK / LAYANAN', v: productName, isAccent: true },
+                { k: 'ID TRANSAKSI', v: transactionId },
+                { k: 'PENGIRIM / PEMBELI', v: `${buyerName} (${displayBuyer})` },
+                { k: 'PENERIMA / MERCHANT', v: `${ownerName} (${displayOwner})` },
+                { k: 'WAKTU TRANSAKSI', v: formattedDateTime }
+            ];
 
-            <rect width="1080" height="1920" fill="#0A0E15" />
-            <rect x="90" y="180" width="900" height="1530" rx="35" ry="35" fill="#121A26" stroke="#1E293B" stroke-width="2.5" />
+            items.forEach((item, index) => {
+                const currentY = detailsY + (index * 260);
 
-            <!-- Header Gradient Modern -->
-            <path d="M 90,215 Q 90,180 125,180 L 955,180 Q 990,180 990,215 L 990,460 L 90,460 Z" fill="url(#headerGrad)" />
+                // Menggambar Kunci Informasi (Sebelah Kiri)
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#8FA3BF';
+                ctx.font = 'bold 44px sans-serif';
+                ctx.fillText(item.k, cX + 140, currentY);
 
-            <!-- Lingkaran Centang Putih -->
-            <circle cx="540" cy="320" r="60" fill="#ffffff" />
-            <path d="M515 322 L532 339 L565 304" fill="none" stroke="#00C896" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                // Menggambar Nilai Informasi (Sebelah Kanan)
+                ctx.textAlign = 'right';
+                ctx.fillStyle = item.isAccent ? '#00C896' : '#EAF2FF';
+                ctx.font = '900 48px sans-serif';
 
-            <!-- Judul Kwitansi -->
-            <text x="540" y="550" class="font-base font-bold" font-size="38" fill="#EAF2FF" text-anchor="middle">BUKTI TRANSFER DIGITAL</text>
+                let txt = item.v;
+                if (txt.length > 28) txt = txt.substring(0, 25) + "...";
+                ctx.fillText(txt, cX + cW - 140, currentY);
 
-            <!-- Nominal Transaksi -->
-            <text x="540" y="675" class="font-base font-black" font-size="85" fill="#00C896" text-anchor="middle">Rp ${amount}</text>
-            <text x="540" y="735" class="font-base font-bold" font-size="26" fill="#8FA3BF" text-anchor="middle">${productName.toUpperCase()}</text>
+                // Garis Bantu Pemisah Antar Kolom
+                if (index < items.length - 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(cX + 140, currentY + 80);
+                    ctx.lineTo(cX + cW - 140, currentY + 80);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+            });
 
-            <!-- Garis Putus-putus -->
-            <line x1="150" y1="795" x2="930" y2="795" stroke="#1E293B" stroke-width="3.5" stroke-dasharray="12 10" />
+            // Footer Jaminan Kotak di bagian bawah kartu
+            const fBoxY = cH + 160;
+            drawRoundedRect(ctx, cX + 80, fBoxY, cW - 160, 200, 36, 'rgba(255, 255, 255, 0.03)', 'rgba(255, 255, 255, 0.06)', 3);
+            ctx.fillStyle = '#8FA3BF';
+            ctx.font = 'italic bold 44px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('✓ Diverifikasi Aman oleh Jaringan Secure FazzPay', checkX, fBoxY + 115);
 
-            <!-- Detail -->
-            <text x="150" y="870" class="font-base font-bold" font-size="24" fill="#8FA3BF">Nama Pengirim</text>
-            <text x="930" y="870" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${buyerName}</text>
-            <line x1="150" y1="910" x2="930" y2="910" stroke="#1E293B" stroke-width="1.5" />
+        } else if (template === 'fintech') {
+            // --- TEMPLATE: FINTECH CARD ---
+            ctx.fillStyle = '#0A0E15';
+            ctx.fillRect(0, 0, width, height);
 
-            <text x="150" y="990" class="font-base font-bold" font-size="24" fill="#8FA3BF">Username Pengirim</text>
-            <text x="930" y="990" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${displayBuyer}</text>
-            <line x1="150" y1="1030" x2="930" y2="1030" stroke="#1E293B" stroke-width="1.5" />
+            const cX = 180;
+            const cY = 360;
+            const cW = 1800;
+            const cH = 3060;
+            const cRadius = 70;
 
-            <text x="150" y="1110" class="font-base font-bold" font-size="24" fill="#8FA3BF">Nama Penerima</text>
-            <text x="930" y="1110" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${ownerName}</text>
-            <line x1="150" y1="1150" x2="930" y2="1150" stroke="#1E293B" stroke-width="1.5" />
+            // Kartu Dasar Solid
+            drawRoundedRect(ctx, cX, cY, cW, cH, cRadius, '#121A26', '#1E293B', 5);
 
-            <text x="150" y="1230" class="font-base font-bold" font-size="24" fill="#8FA3BF">Username Penerima</text>
-            <text x="930" y="1230" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${displayOwner}</text>
-            <line x1="150" y1="1270" x2="930" y2="1270" stroke="#1E293B" stroke-width="1.5" />
+            // Header berwarna gradien mengkilap di bagian atas kartu
+            ctx.save();
+            // Path kliping untuk sudut bulat bagian atas saja
+            ctx.beginPath();
+            ctx.moveTo(cX + cRadius, cY);
+            ctx.lineTo(cX + cW - cRadius, cY);
+            ctx.quadraticCurveTo(cX + cW, cY, cX + cW, cY + cRadius);
+            ctx.lineTo(cX + cW, cY + 560);
+            ctx.lineTo(cX, cY + 560);
+            ctx.lineTo(cX, cY + cRadius);
+            ctx.quadraticCurveTo(cX, cY, cX + cRadius, cY);
+            ctx.closePath();
+            ctx.clip();
 
-            <text x="150" y="1350" class="font-base font-bold" font-size="24" fill="#8FA3BF">Nomor Referensi</text>
-            <text x="930" y="1350" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${transactionId}</text>
-            <line x1="150" y1="1390" x2="930" y2="1390" stroke="#1E293B" stroke-width="1.5" />
+            const headerGrad = ctx.createLinearGradient(cX, cY, cX + cW, cY + 560);
+            headerGrad.addColorStop(0, '#00C896');
+            headerGrad.addColorStop(1, '#1E90FF');
+            ctx.fillStyle = headerGrad;
+            ctx.fillRect(cX, cY, cW, 560);
+            ctx.restore();
 
-            <text x="150" y="1470" class="font-base font-bold" font-size="24" fill="#8FA3BF">Tanggal &amp; Waktu</text>
-            <text x="930" y="1470" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${formattedDateTime}</text>
+            // Centang Putih di Header
+            const checkX = width / 2;
+            const checkY = cY + 280;
+            ctx.beginPath();
+            ctx.arc(checkX, checkY, 110, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fill();
 
-            <text x="540" y="1610" class="font-base font-bold" font-size="22" fill="#1E90FF" text-anchor="middle">✓ Dokumen Elektronik Sah Berenkripsi End-To-End</text>
+            ctx.beginPath();
+            ctx.moveTo(checkX - 44, checkY + 4);
+            ctx.lineTo(checkX - 12, checkY + 34);
+            ctx.lineTo(checkX + 44, checkY - 28);
+            ctx.strokeStyle = '#00C896';
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
 
-            <text x="540" y="1820" class="font-base font-bold" font-size="22" fill="#8FA3BF" fill-opacity="0.4" text-anchor="middle">fazzpaypic.vercel.app</text>
-        </svg>
-        `;
-    } else {
-        svgContent = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
-            <defs>
-                <style>
-                    .font-base { font-family: 'SF Pro Display', -apple-system, 'Inter', sans-serif; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
-                    .font-bold { font-weight: 700; }
-                    .font-black { font-weight: 900; }
-                </style>
-            </defs>
+            // Teks Judul
+            ctx.fillStyle = '#EAF2FF';
+            ctx.font = '900 76px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('BUKTI TRANSFER DIGITAL', checkX, cY + 740);
 
-            <rect width="1080" height="1920" fill="#0B0F14" />
-            <rect x="110" y="240" width="860" height="1380" rx="24" ry="24" fill="#121821" stroke="rgba(255,255,255,0.05)" stroke-width="1.5" />
+            // Jumlah Uang Nominal
+            ctx.fillStyle = '#00C896';
+            ctx.font = '900 170px sans-serif';
+            ctx.fillText(`Rp ${amount}`, checkX, cY + 980);
 
-            <!-- Centang Hijau Elegan -->
-            <circle cx="540" cy="400" r="60" fill="rgba(0, 200, 150, 0.1)" stroke="#00C896" stroke-width="3.5" />
-            <path d="M520 402 L534 416 L562 386" fill="none" stroke="#00C896" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+            ctx.fillStyle = '#8FA3BF';
+            ctx.font = 'bold 46px sans-serif';
+            ctx.fillText(productName.toUpperCase(), checkX, cY + 1100);
 
-            <text x="540" y="520" class="font-base font-bold" font-size="38" fill="#EAF2FF" text-anchor="middle">Bukti Transaksi</text>
-            <text x="540" y="570" class="font-base" font-size="24" fill="#8FA3BF" text-anchor="middle">Berhasil Dikirim ke Merchant</text>
+            // Pembatas Garis Putus-putus Tebal dan Padat
+            ctx.beginPath();
+            ctx.setLineDash([24, 20]);
+            ctx.moveTo(cX + 100, cY + 1220);
+            ctx.lineTo(cX + cW - 100, cY + 1220);
+            ctx.strokeStyle = '#1E293B';
+            ctx.lineWidth = 6;
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset
 
-            <!-- Angka Nominal -->
-            <text x="540" y="725" class="font-base font-bold" font-size="96" fill="#EAF2FF" text-anchor="middle">Rp ${amount}</text>
-            <text x="540" y="785" class="font-base" font-size="24" fill="#00C896" text-anchor="middle">Untuk Layanan: ${productName}</text>
+            // Detail Informasi
+            const listY = cY + 1360;
+            const fields = [
+                { k: "Nama Pengirim", v: buyerName },
+                { k: "Username Pengirim", v: displayBuyer },
+                { k: "Nama Penerima", v: ownerName },
+                { k: "Username Penerima", v: displayOwner },
+                { k: "Nomor Referensi", v: transactionId },
+                { k: "Tanggal & Waktu", v: formattedDateTime }
+            ];
 
-            <line x1="190" y1="840" x2="890" y2="840" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+            fields.forEach((field, index) => {
+                const currentY = listY + (index * 230);
 
-            <!-- Detail -->
-            <text x="190" y="930" class="font-base font-bold" font-size="24" fill="#8FA3BF">Akun Pengirim</text>
-            <text x="890" y="930" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${buyerName} (${displayBuyer})</text>
-            <line x1="190" y1="975" x2="890" y2="975" stroke="rgba(255,255,255,0.04)" stroke-width="1.5" />
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#8FA3BF';
+                ctx.font = 'bold 44px sans-serif';
+                ctx.fillText(field.k, cX + 120, currentY);
 
-            <text x="190" y="1065" class="font-base font-bold" font-size="24" fill="#8FA3BF">Diterima Oleh</text>
-            <text x="890" y="1065" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${ownerName} (${displayOwner})</text>
-            <line x1="190" y1="1110" x2="890" y2="1110" stroke="rgba(255,255,255,0.04)" stroke-width="1.5" />
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#EAF2FF';
+                ctx.font = '900 46px sans-serif';
+                ctx.fillText(field.v, cX + cW - 120, currentY);
 
-            <text x="190" y="1200" class="font-base font-bold" font-size="24" fill="#8FA3BF">Kode Referensi</text>
-            <text x="890" y="1200" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${transactionId}</text>
-            <line x1="190" y1="1245" x2="890" y2="1245" stroke="rgba(255,255,255,0.04)" stroke-width="1.5" />
+                ctx.beginPath();
+                ctx.moveTo(cX + 120, currentY + 70);
+                ctx.lineTo(cX + cW - 120, currentY + 70);
+                ctx.strokeStyle = '#1E293B';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            });
 
-            <text x="190" y="1335" class="font-base font-bold" font-size="24" fill="#8FA3BF">Waktu Transaksi</text>
-            <text x="890" y="1335" class="font-base font-bold" font-size="26" fill="#EAF2FF" text-anchor="end">${formattedDateTime}</text>
+            // Teks Jaminan Sah
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#1E90FF';
+            ctx.font = '900 44px sans-serif';
+            ctx.fillText('✓ Dokumen Elektronik Sah Berenkripsi End-To-End', checkX, cY + 2840);
 
-            <text x="540" y="1520" class="font-base" font-size="22" fill="#8FA3BF" text-anchor="middle">🔒 Dokumen Resmi Transfer FazzPay</text>
+        } else {
+            // --- TEMPLATE: MINIMAL CLEAN (Bawaan Standard) ---
+            ctx.fillStyle = '#0B0F14';
+            ctx.fillRect(0, 0, width, height);
 
-            <text x="540" y="1820" class="font-base font-bold" font-size="22" fill="#8FA3BF" fill-opacity="0.4" text-anchor="middle">fazzpaypic.vercel.app</text>
-        </svg>
-        `;
+            const cX = 220;
+            const cY = 480;
+            const cW = 1720;
+            const cH = 2760;
+
+            // Kartu Utama Minimalis
+            drawRoundedRect(ctx, cX, cY, cW, cH, 48, '#121821', 'rgba(255,255,255,0.06)', 3);
+
+            // Centang Hijau
+            const checkX = width / 2;
+            const checkY = cY + 320;
+            ctx.beginPath();
+            ctx.arc(checkX, checkY, 120, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 200, 150, 0.1)';
+            ctx.strokeStyle = '#00C896';
+            ctx.lineWidth = 7;
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(checkX - 40, checkY + 4);
+            ctx.lineTo(checkX - 12, checkY + 32);
+            ctx.lineTo(checkX + 44, checkY - 28);
+            ctx.strokeStyle = '#00C896';
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Judul
+            ctx.fillStyle = '#EAF2FF';
+            ctx.font = '900 76px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Bukti Transaksi', checkX, cY + 560);
+
+            ctx.fillStyle = '#8FA3BF';
+            ctx.font = 'bold 44px sans-serif';
+            ctx.fillText('Berhasil Dikirim ke Merchant', checkX, cY + 660);
+
+            // Nominal
+            ctx.fillStyle = '#EAF2FF';
+            ctx.font = '900 192px sans-serif';
+            ctx.fillText(`Rp ${amount}`, checkX, cY + 970);
+
+            ctx.fillStyle = '#00C896';
+            ctx.font = 'bold 46px sans-serif';
+            ctx.fillText(`Untuk Layanan: ${productName}`, checkX, cY + 1090);
+
+            // Pembatas Solid
+            ctx.beginPath();
+            ctx.moveTo(cX + 160, cY + 1210);
+            ctx.lineTo(cX + cW - 160, cY + 1210);
+            ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // List Detail
+            const dataY = cY + 1400;
+            const listItems = [
+                { k: "Akun Pengirim", v: `${buyerName} (${displayBuyer})` },
+                { k: "Diterima Oleh", v: `${ownerName} (${displayOwner})` },
+                { k: "Kode Referensi", v: transactionId },
+                { k: "Waktu Transaksi", v: formattedDateTime }
+            ];
+
+            listItems.forEach((item, index) => {
+                const currentY = dataY + (index * 270);
+
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#8FA3BF';
+                ctx.font = 'bold 44px sans-serif';
+                ctx.fillText(item.k, cX + 160, currentY);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#EAF2FF';
+                ctx.font = '900 46px sans-serif';
+                
+                let val = item.v;
+                if (val.length > 32) val = val.substring(0, 29) + "...";
+                ctx.fillText(val, cX + cW - 160, currentY);
+
+                ctx.beginPath();
+                ctx.moveTo(cX + 160, currentY + 90);
+                ctx.lineTo(cX + cW - 160, currentY + 90);
+                ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+
+            // Footer Penutup
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#8FA3BF';
+            ctx.font = 'bold 44px sans-serif';
+            ctx.fillText('🔒 Dokumen Resmi Transfer FazzPay', checkX, cY + 2520);
+        }
+
+        // ================= WATERMARK WAJIB SISI BAWAH KANVAS =================
+        ctx.fillStyle = 'rgba(143, 163, 191, 0.45)';
+        ctx.font = '900 44px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('fazzpaypic.vercel.app', width / 2, height - 160);
+
+        // Export Buffer Gambar PNG Murni Tanpa Hambatan
+        const buffer = canvas.toBuffer('image/png');
+
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'inline; filename="receipt.png"');
+        return res.status(200).send(buffer);
+
+    } catch (err) {
+        console.error("Kesalahan rendering gambar:", err);
+        return res.status(500).json({ error: "Gagal menggambar bukti transfer menggunakan Rust Canvas Engine.", details: err.message });
     }
-
-    // Mengirim langsung konten XML SVG
-    res.setHeader('Content-Type', 'image/svg+xml');
-    return res.status(200).send(svgContent.trim());
 });
 
-// Jalankan Server lokal (Vercel akan mengeksekusi handler ekspor ini secara otomatis)
+// Jalankan server lokal
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`FazzPay Payment Receipt engine berjalan di port ${PORT}`);
+    console.log(`FazzPay Premium Rust Canvas Server berjalan sempurna di port ${PORT}`);
 });
 
 module.exports = app;
