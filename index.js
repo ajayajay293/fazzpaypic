@@ -1,43 +1,19 @@
 
+// Backend Serverless FazzPay - Menghasilkan Bukti Transfer Berbasis SVG Resolusi Tinggi
 const express = require('express');
-const { createCanvas, registerFont } = require('canvas');
 const path = require('path');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static UI assets locally or serve dynamically
+// Sajikan aset statis secara lokal
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Secure API Key Rule
+// Kunci API Rahasia yang divalidasi dengan ketat
 const REQUIRED_API_KEY = "fazzganzz";
 
-// Helper to draw rounded rectangles
-function drawRoundRect(ctx, x, y, width, height, radius, fillStyle = null, strokeStyle = null, lineWidth = 1) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-    if (fillStyle) {
-        ctx.fillStyle = fillStyle;
-        ctx.fill();
-    }
-    if (strokeStyle) {
-        ctx.strokeStyle = strokeStyle;
-        ctx.lineWidth = lineWidth;
-        ctx.stroke();
-    }
-}
-
-// Generate receipt endpoint
+// Endpoint API Pembuat Bukti Transfer (Menghasilkan SVG berkualitas tinggi)
 app.post('/api/generate', (req, res) => {
     const {
         apiKey,
@@ -49,440 +25,243 @@ app.post('/api/generate', (req, res) => {
         transactionId,
         productName,
         dateTime,
-        template = 'minimal' // 'minimal', 'fintech', 'glass'
+        template = 'minimal' // Pilihan: 'minimal', 'fintech', 'glass'
     } = req.body;
 
-    // Strict authentication verification
+    // Validasi Keamanan API Key secara ketat
     if (!apiKey || apiKey !== REQUIRED_API_KEY) {
-        return res.status(401).json({ error: "Unauthorized. Invalid or missing API Key." });
+        return res.status(401).json({ error: "Kunci API tidak valid atau tidak diizinkan." });
     }
 
-    // Required fields validation
+    // Validasi data wajib isi
     if (!amount || !buyerName || !ownerName || !transactionId || !productName) {
-        return res.status(400).json({ error: "Missing required fields for receipt generation." });
+        return res.status(400).json({ error: "Semua parameter transaksi wajib diisi." });
     }
 
-    try {
-        // High resolution Canvas 1080x1920 (2K portrait receipt format)
-        const canvasWidth = 1080;
-        const canvasHeight = 1920;
-        const canvas = createCanvas(canvasWidth, canvasHeight);
-        const ctx = canvas.getContext('2d');
+    const formattedDateTime = dateTime ? dateTime.replace('T', ' ') : new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const displayBuyer = `@${buyerUsername || 'buyer'}`;
+    const displayOwner = `@${ownerUsername || 'owner'}`;
 
-        // Clean Canvas rendering parameters
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
+    let svgContent = '';
 
-        // Set layout variables
-        const displayDateTime = dateTime ? dateTime.replace('T', ' ') : new Date().toISOString().slice(0, 19).replace('T', ' ');
+    // Render Template berdasarkan pilihan pengguna
+    if (template === 'glass') {
+        // --- TEMPLATE: DARK GLASS (Visual Mewah Futuristik) ---
+        svgContent = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+            <defs>
+                <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#06090E" />
+                    <stop offset="50%" stop-color="#0B121E" />
+                    <stop offset="100%" stop-color="#05070A" />
+                </linearGradient>
+                <radialGradient id="neonGlow1" cx="20%" cy="20%" r="60%">
+                    <stop offset="0%" stop-color="#00C896" stop-opacity="0.15" />
+                    <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+                </radialGradient>
+                <radialGradient id="neonGlow2" cx="80%" cy="80%" r="70%">
+                    <stop offset="0%" stop-color="#1E90FF" stop-opacity="0.15" />
+                    <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="glassBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.15" />
+                    <stop offset="50%" stop-color="#ffffff" stop-opacity="0.02" />
+                    <stop offset="100%" stop-color="#00C896" stop-opacity="0.25" />
+                </linearGradient>
+                <filter id="blurFilter">
+                    <feGaussianBlur stdDeviation="20" />
+                </filter>
+            </defs>
 
-        // ================= TEMPLATE RENDERING =================
-        if (template === 'glass') {
-            // Theme: Dark Glass
-            // 1. Base dark futuristic grid/gradient background
-            const bgGrad = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-            bgGrad.addColorStop(0, '#06090e');
-            bgGrad.addColorStop(0.5, '#0b121e');
-            bgGrad.addColorStop(1, '#05070a');
-            ctx.fillStyle = bgGrad;
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            <!-- Latar Belakang -->
+            <rect width="1080" height="1920" fill="url(#bgGrad)" />
+            <circle cx="200" cy="300" r="600" fill="url(#neonGlow1)" />
+            <circle cx="900" cy="1400" r="700" fill="url(#neonGlow2)" />
 
-            // Draw abstract cyber glows
-            ctx.beginPath();
-            const radGrad1 = ctx.createRadialGradient(200, 300, 10, 200, 300, 600);
-            radGrad1.addColorStop(0, 'rgba(0, 200, 150, 0.15)');
-            radGrad1.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = radGrad1;
-            ctx.arc(200, 300, 600, 0, Math.PI * 2);
-            ctx.fill();
+            <!-- Kartu Utama Glassmorphism -->
+            <rect x="100" y="220" width="880" height="1450" rx="40" ry="40" fill="#141C29" fill-opacity="0.75" stroke="url(#glassBorder)" stroke-width="3" />
 
-            ctx.beginPath();
-            const radGrad2 = ctx.createRadialGradient(900, 1400, 10, 900, 1400, 700);
-            radGrad2.addColorStop(0, 'rgba(30, 144, 255, 0.15)');
-            radGrad2.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = radGrad2;
-            ctx.arc(900, 1400, 700, 0, Math.PI * 2);
-            ctx.fill();
+            <!-- Lingkaran Status Berhasil -->
+            <circle cx="540" cy="380" r="60" fill="#00C896" fill-opacity="0.2" stroke="#00C896" stroke-width="4" filter="drop-shadow(0px 0px 15px rgba(0,200,150,0.5))" />
+            <path d="M515 382 L532 399 L565 364" fill="none" stroke="#EAF2FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
 
-            // 2. Receipt Container glass background
-            const receiptX = 100;
-            const receiptY = 220;
-            const receiptW = 880;
-            const receiptH = 1450;
-            const radius = 40;
+            <!-- Header Teks -->
+            <text x="540" y="500" font-family="system-ui, sans-serif" font-size="36" font-weight="bold" fill="#EAF2FF" text-anchor="middle">Pembayaran Berhasil</text>
+            <text x="540" y="550" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF" text-anchor="middle">TOTAL NOMINAL TRANSAKSI</text>
 
-            // Glass reflection gradient stroke
-            const glassStroke = ctx.createLinearGradient(receiptX, receiptY, receiptX + receiptW, receiptY + receiptH);
-            glassStroke.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
-            glassStroke.addColorStop(0.5, 'rgba(255, 255, 255, 0.02)');
-            glassStroke.addColorStop(1, 'rgba(0, 200, 150, 0.2)');
+            <!-- Jumlah Uang -->
+            <text x="540" y="660" font-family="system-ui, sans-serif" font-size="80" font-weight="900" fill="#00C896" text-anchor="middle">Rp ${amount}</text>
 
-            drawRoundRect(ctx, receiptX, receiptY, receiptW, receiptH, radius, 'rgba(20, 28, 41, 0.75)', glassStroke, 3);
+            <!-- Garis Pembatas -->
+            <line x1="160" y1="720" x2="920" y2="720" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2" />
 
-            // 3. Status Circle & Check Icon (Glassy neon glow)
-            const checkX = canvasWidth / 2;
-            const checkY = receiptY + 160;
-            ctx.shadowColor = '#00C896';
-            ctx.shadowBlur = 30;
-            
-            ctx.beginPath();
-            ctx.arc(checkX, checkY, 60, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(0, 200, 150, 0.2)';
-            ctx.strokeStyle = '#00C896';
-            ctx.lineWidth = 4;
-            ctx.fill();
-            ctx.stroke();
-            ctx.shadowBlur = 0; // Reset shadow
+            <!-- Detail Transaksi -->
+            <!-- Baris 1: Produk -->
+            <text x="160" y="790" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">PRODUK / LAYANAN</text>
+            <text x="920" y="790" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#00C896" text-anchor="end">${productName}</text>
+            <line x1="160" y1="830" x2="920" y2="830" stroke="rgba(255,255,255,0.05)" stroke-width="1.5" stroke-dasharray="4 6" />
 
-            // Checkmark Path drawing
-            ctx.beginPath();
-            ctx.moveTo(checkX - 25, checkY + 2);
-            ctx.lineTo(checkX - 8, checkY + 20);
-            ctx.lineTo(checkX + 25, checkY - 15);
-            ctx.strokeStyle = '#EAF2FF';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.stroke();
+            <!-- Baris 2: ID Transaksi -->
+            <text x="160" y="920" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">ID TRANSAKSI</text>
+            <text x="920" y="920" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#EAF2FF" text-anchor="end">${transactionId}</text>
+            <line x1="160" y1="960" x2="920" y2="960" stroke="rgba(255,255,255,0.05)" stroke-width="1.5" stroke-dasharray="4 6" />
 
-            // Status Text
-            ctx.fillStyle = '#EAF2FF';
-            ctx.font = 'bold 36px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('Payment Successful', checkX, checkY + 120);
+            <!-- Baris 3: Pengirim -->
+            <text x="160" y="1050" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">PENGIRIM / PEMBELI</text>
+            <text x="920" y="1050" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#EAF2FF" text-anchor="end">${buyerName} (${displayBuyer})</text>
+            <line x1="160" y1="1090" x2="920" y2="1090" stroke="rgba(255,255,255,0.05)" stroke-width="1.5" stroke-dasharray="4 6" />
 
-            // Amount Banner
-            ctx.fillStyle = '#8FA3BF';
-            ctx.font = '28px sans-serif';
-            ctx.fillText('TOTAL TRANSACTED AMOUNT', checkX, checkY + 190);
+            <!-- Baris 4: Penerima -->
+            <text x="160" y="1180" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">PENERIMA / MERCHANT</text>
+            <text x="920" y="1180" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#EAF2FF" text-anchor="end">${ownerName} (${displayOwner})</text>
+            <line x1="160" y1="1220" x2="920" y2="1220" stroke="rgba(255,255,255,0.05)" stroke-width="1.5" stroke-dasharray="4 6" />
 
-            ctx.fillStyle = '#00C896';
-            ctx.font = '900 78px sans-serif';
-            ctx.fillText(amount, checkX, checkY + 290);
+            <!-- Baris 5: Waktu -->
+            <text x="160" y="1310" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">WAKTU TRANSAKSI</text>
+            <text x="920" y="1310" font-family="system-ui, sans-serif" font-size="28" font-weight="bold" fill="#EAF2FF" text-anchor="end">${formattedDateTime}</text>
 
-            // Subtle divider line
-            ctx.beginPath();
-            ctx.moveTo(receiptX + 60, checkY + 360);
-            ctx.lineTo(receiptX + receiptW - 60, checkY + 360);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            <!-- Kotak Jaminan Keamanan -->
+            <rect x="140" y="1420" width="800" height="110" rx="20" ry="20" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1.5" />
+            <text x="540" y="1485" font-family="system-ui, sans-serif" font-style="italic" font-size="24" fill="#8FA3BF" text-anchor="middle">Diverifikasi Aman oleh Jaringan Secure FazzPay</text>
 
-            // List Details
-            const startDetailsY = checkY + 440;
-            const leftColX = receiptX + 80;
-            const rightColX = receiptX + receiptW - 80;
+            <!-- Watermark Footer Wajib -->
+            <text x="540" y="1820" font-family="system-ui, sans-serif" font-size="22" font-weight="bold" fill="#8FA3BF" fill-opacity="0.4" text-anchor="middle">fazzpaypic.vercel.app</text>
+        </svg>
+        `;
+    } else if (template === 'fintech') {
+        // --- TEMPLATE: FINTECH CARD (Modern Stripe Gradient Header) ---
+        svgContent = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+            <defs>
+                <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#00C896" />
+                    <stop offset="100%" stop-color="#1E90FF" />
+                </linearGradient>
+            </defs>
 
-            const details = [
-                { label: 'PRODUCT / SERVICE', value: productName, highlight: true },
-                { label: 'TRANSACTION ID', value: transactionId },
-                { label: 'SENDER / BUYER', value: `${buyerName} (@${buyerUsername || 'buyer'})` },
-                { label: 'MERCHANT / OWNER', value: `${ownerName} (@${ownerUsername || 'owner'})` },
-                { label: 'DATE AND TIME', value: displayDateTime }
-            ];
+            <!-- Latar belakang gelap -->
+            <rect width="1080" height="1920" fill="#0A0E15" />
 
-            details.forEach((item, index) => {
-                const currentY = startDetailsY + (index * 130);
+            <!-- Kartu Bukti Utama -->
+            <rect x="90" y="180" width="900" height="1530" rx="35" ry="35" fill="#121A26" stroke="#1E293B" stroke-width="2" />
 
-                // Draw sub-labels
-                ctx.textAlign = 'left';
-                ctx.fillStyle = '#8FA3BF';
-                ctx.font = '24px sans-serif';
-                ctx.fillText(item.label, leftColX, currentY);
+            <!-- Kliping Sudut Melengkung Header Gradient -->
+            <g clip-path="url(#headerClip)">
+                <path d="M 90,215 Q 90,180 125,180 L 955,180 Q 990,180 990,215 L 990,460 L 90,460 Z" fill="url(#headerGrad)" />
+            </g>
 
-                // Draw values
-                ctx.textAlign = 'right';
-                ctx.fillStyle = item.highlight ? '#00C896' : '#EAF2FF';
-                ctx.font = 'bold 28px sans-serif';
-                
-                // Truncate logic if too long
-                let textVal = item.value;
-                if (textVal.length > 28) {
-                    textVal = textVal.substring(0, 25) + "...";
-                }
-                ctx.fillText(textVal, rightColX, currentY);
+            <!-- Lingkaran Centang Putih -->
+            <circle cx="540" cy="320" r="60" fill="#ffffff" filter="drop-shadow(0px 8px 16px rgba(0,0,0,0.2))" />
+            <path d="M515 322 L532 339 L565 304" fill="none" stroke="#00C896" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
 
-                // Underline helper dots for structure
-                if (index < details.length - 1) {
-                    ctx.beginPath();
-                    ctx.setLineDash([4, 6]);
-                    ctx.moveTo(leftColX, currentY + 40);
-                    ctx.lineTo(rightColX, currentY + 40);
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-                    ctx.setLineDash([]); // Reset
-                }
-            });
+            <!-- Judul Kwitansi -->
+            <text x="540" y="550" font-family="system-ui, sans-serif" font-size="38" font-weight="bold" fill="#EAF2FF" text-anchor="middle">BUKTI TRANSFER DIGITAL</text>
 
-            // Footer brand banner inside card
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-            drawRoundRect(ctx, receiptX + 40, receiptH + 80, receiptW - 80, 110, 20, 'rgba(0, 0, 0, 0.2)', 'rgba(255,255,255,0.06)', 1.5);
-            
-            ctx.fillStyle = '#8FA3BF';
-            ctx.font = 'italic 24px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('Transaction verified by FazzPay Secure Network', checkX, receiptH + 146);
+            <!-- Nominal Transaksi -->
+            <text x="540" y="670" font-family="system-ui, sans-serif" font-size="85" font-weight="900" fill="#00C896" text-anchor="middle">Rp ${amount}</text>
+            <text x="540" y="730" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#8FA3BF" text-anchor="middle">${productName.toUpperCase()}</text>
 
-        } else if (template === 'fintech') {
-            // Theme: Fintech Card (Card Deck gradient top, gorgeous high-contrast blue-green theme)
-            ctx.fillStyle = '#0A0E15';
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            <!-- Garis Putus-putus -->
+            <line x1="150" y1="790" x2="930" y2="790" stroke="#1E293B" stroke-width="3" stroke-dasharray="12 10" />
 
-            // Receipt Container Card
-            const receiptX = 90;
-            const receiptY = 180;
-            const receiptW = 900;
-            const receiptH = 1530;
-            const radius = 35;
+            <!-- List Detail Transaksi -->
+            <!-- Baris 1 -->
+            <text x="150" y="870" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Nama Pengirim</text>
+            <text x="930" y="870" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${buyerName}</text>
+            <line x1="150" y1="910" x2="930" y2="910" stroke="#1E293B" stroke-width="1" />
 
-            // Main white-ish gray solid receipt card
-            drawRoundRect(ctx, receiptX, receiptY, receiptW, receiptH, radius, '#121A26', '#1E293B', 2);
+            <!-- Baris 2 -->
+            <text x="150" y="990" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Username Pengirim</text>
+            <text x="930" y="990" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${displayBuyer}</text>
+            <line x1="150" y1="1030" x2="930" y2="1030" stroke="#1E293B" stroke-width="1" />
 
-            // Top Gradient header bar inside card
-            ctx.save();
-            ctx.beginPath();
-            // Create a path representing top rounded corner deck
-            ctx.moveTo(receiptX + radius, receiptY);
-            ctx.lineTo(receiptX + receiptW - radius, receiptY);
-            ctx.quadraticCurveTo(receiptX + receiptW, receiptY, receiptX + receiptW, receiptY + radius);
-            ctx.lineTo(receiptX + receiptW, receiptY + 280);
-            ctx.lineTo(receiptX, receiptY + 280);
-            ctx.lineTo(receiptX, receiptY + radius);
-            ctx.quadraticCurveTo(receiptX, receiptY, receiptX + radius, receiptY);
-            ctx.closePath();
-            ctx.clip();
+            <!-- Baris 3 -->
+            <text x="150" y="1110" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Nama Penerima</text>
+            <text x="930" y="1110" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${ownerName}</text>
+            <line x1="150" y1="1150" x2="930" y2="1150" stroke="#1E293B" stroke-width="1" />
 
-            const topGrad = ctx.createLinearGradient(receiptX, receiptY, receiptX + receiptW, receiptY + 280);
-            topGrad.addColorStop(0, '#00C896');
-            topGrad.addColorStop(1, '#1E90FF');
-            ctx.fillStyle = topGrad;
-            ctx.fill();
-            ctx.restore();
+            <!-- Baris 4 -->
+            <text x="150" y="1230" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Username Penerima</text>
+            <text x="930" y="1230" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${displayOwner}</text>
+            <line x1="150" y1="1270" x2="930" y2="1270" stroke="#1E293B" stroke-width="1" />
 
-            // Status within fintech card
-            const checkX = canvasWidth / 2;
-            const checkY = receiptY + 140;
+            <!-- Baris 5 -->
+            <text x="150" y="1350" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Nomor Referensi</text>
+            <text x="930" y="1350" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${transactionId}</text>
+            <line x1="150" y1="1390" x2="930" y2="1390" stroke="#1E293B" stroke-width="1" />
 
-            // Pure white checkmark disc
-            ctx.beginPath();
-            ctx.arc(checkX, checkY, 55, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowColor = 'rgba(0,0,0,0.3)';
-            ctx.shadowBlur = 15;
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            <!-- Baris 6 -->
+            <text x="150" y="1470" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Tanggal &amp; Waktu</text>
+            <text x="930" y="1470" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${formattedDateTime}</text>
 
-            // Check icon in green
-            ctx.beginPath();
-            ctx.moveTo(checkX - 22, checkY + 2);
-            ctx.lineTo(checkX - 7, checkY + 17);
-            ctx.lineTo(checkX + 22, checkY - 14);
-            ctx.strokeStyle = '#00C896';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.stroke();
+            <!-- Teks Footer Jaminan -->
+            <text x="540" y="1610" font-family="system-ui, sans-serif" font-size="22" font-weight="bold" fill="#1E90FF" text-anchor="middle">✓ Dokumen Elektronik Sah Berenkripsi End-To-End</text>
 
-            // Success Label inside grey card body
-            ctx.fillStyle = '#EAF2FF';
-            ctx.font = 'bold 38px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('TRANSFER RECEIPT', checkX, receiptY + 360);
+            <!-- Watermark Footer Wajib -->
+            <text x="540" y="1820" font-family="system-ui, sans-serif" font-size="22" font-weight="bold" fill="#8FA3BF" fill-opacity="0.4" text-anchor="middle">fazzpaypic.vercel.app</text>
+        </svg>
+        `;
+    } else {
+        // --- TEMPLATE: MINIMAL CLEAN (Sederhana, Bersih, Profesional) ---
+        svgContent = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+            <!-- Latar belakang gelap minimalis -->
+            <rect width="1080" height="1920" fill="#0B0F14" />
 
-            // Big amount area
-            ctx.fillStyle = '#00C896';
-            ctx.font = '900 85px sans-serif';
-            ctx.fillText(amount, checkX, receiptY + 470);
+            <!-- Kartu Utama -->
+            <rect x="110" y="240" width="860" height="1380" rx="24" ry="24" fill="#121821" stroke="rgba(255,255,255,0.04)" stroke-width="1.5" />
 
-            ctx.fillStyle = '#8FA3BF';
-            ctx.font = 'bold 26px sans-serif';
-            ctx.fillText(productName.toUpperCase(), checkX, receiptY + 530);
+            <!-- Centang Hijau Elegan -->
+            <circle cx="540" cy="400" r="60" fill="rgba(0, 200, 150, 0.1)" stroke="#00C896" stroke-width="3" />
+            <path d="M520 402 L534 416 L562 386" fill="none" stroke="#00C896" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
 
-            // Dashed Divider line
-            ctx.beginPath();
-            ctx.setLineDash([12, 10]);
-            ctx.moveTo(receiptX + 50, receiptY + 590);
-            ctx.lineTo(receiptX + receiptW - 50, receiptY + 590);
-            ctx.strokeStyle = '#1E293B';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            ctx.setLineDash([]); // Reset
+            <!-- Judul Atas -->
+            <text x="540" y="520" font-family="system-ui, sans-serif" font-size="38" font-weight="bold" fill="#EAF2FF" text-anchor="middle">Bukti Transaksi</text>
+            <text x="540" y="570" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF" text-anchor="middle">Berhasil Dikirim ke Merchant</text>
 
-            // Detail fields placement
-            const detailsY = receiptY + 660;
-            const paddingX = 150;
+            <!-- Angka Nominal -->
+            <text x="540" y="720" font-family="system-ui, sans-serif" font-size="96" font-weight="bold" fill="#EAF2FF" text-anchor="middle">Rp ${amount}</text>
+            <text x="540" y="780" font-family="system-ui, sans-serif" font-size="24" fill="#00C896" text-anchor="middle">Untuk Layanan: ${productName}</text>
 
-            const fields = [
-                { k: "Sender Profile", v: buyerName },
-                { k: "Sender Username", v: `@${buyerUsername || 'buyer'}` },
-                { k: "Receiver Merchant", v: ownerName },
-                { k: "Merchant Username", v: `@${ownerUsername || 'owner'}` },
-                { k: "Transaction ID", v: transactionId },
-                { k: "Processed On", v: displayDateTime }
-            ];
+            <!-- Garis Pembatas Utama -->
+            <line x1="190" y1="840" x2="890" y2="840" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
 
-            fields.forEach((field, idx) => {
-                const currentY = detailsY + (idx * 115);
+            <!-- List Detail Transaksi -->
+            <!-- Baris 1 -->
+            <text x="190" y="930" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Akun Pengirim</text>
+            <text x="890" y="930" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${buyerName} (${displayBuyer})</text>
+            <line x1="190" y1="975" x2="890" y2="975" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
 
-                // Draw label left
-                ctx.textAlign = 'left';
-                ctx.fillStyle = '#8FA3BF';
-                ctx.font = '24px sans-serif';
-                ctx.fillText(field.k, receiptX + 60, currentY);
+            <!-- Baris 2 -->
+            <text x="190" y="1065" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Diterima Oleh</text>
+            <text x="890" y="1065" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${ownerName} (${displayOwner})</text>
+            <line x1="190" y1="1110" x2="890" y2="1110" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
 
-                // Draw value right
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#EAF2FF';
-                ctx.font = 'bold 26px sans-serif';
-                ctx.fillText(field.v, receiptX + receiptW - 60, currentY);
+            <!-- Baris 3 -->
+            <text x="190" y="1200" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Kode Referensi</text>
+            <text x="890" y="1200" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${transactionId}</text>
+            <line x1="190" y1="1245" x2="890" y2="1245" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
 
-                // Draw separation line
-                ctx.beginPath();
-                ctx.moveTo(receiptX + 60, currentY + 35);
-                ctx.lineTo(receiptX + receiptW - 60, currentY + 35);
-                ctx.strokeStyle = '#1E293B';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            });
+            <!-- Baris 4 -->
+            <text x="190" y="1335" font-family="system-ui, sans-serif" font-size="24" fill="#8FA3BF">Waktu Transaksi</text>
+            <text x="890" y="1335" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#EAF2FF" text-anchor="end">${formattedDateTime}</text>
 
-            // Security assurance line
-            ctx.fillStyle = '#1E90FF';
-            ctx.font = 'bold 22px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('✓ End-To-End Encrypted Financial Receipt', checkX, receiptY + 1420);
+            <!-- Teks Kaki Jaminan -->
+            <text x="540" y="1520" font-family="system-ui, sans-serif" font-size="22" fill="#8FA3BF" text-anchor="middle">🔒 Dokumen Resmi Transfer FazzPay</text>
 
-        } else {
-            // Theme: Minimal Clean (Clean professional modern contrast theme)
-            ctx.fillStyle = '#0B0F14';
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-            // Receipt card body
-            const receiptX = 110;
-            const receiptY = 240;
-            const receiptW = 860;
-            const receiptH = 1380;
-            
-            // Soft card fill
-            drawRoundRect(ctx, receiptX, receiptY, receiptW, receiptH, 24, '#121821', 'rgba(255,255,255,0.04)', 1.5);
-
-            // Status Icon Circle (Minimal Green accent)
-            const checkX = canvasWidth / 2;
-            const checkY = receiptY + 160;
-
-            ctx.beginPath();
-            ctx.arc(checkX, checkY, 60, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(0, 200, 150, 0.1)';
-            ctx.strokeStyle = '#00C896';
-            ctx.lineWidth = 3;
-            ctx.fill();
-            ctx.stroke();
-
-            // Checkmark SVG path conversion
-            ctx.beginPath();
-            ctx.moveTo(checkX - 20, checkY + 2);
-            ctx.lineTo(checkX - 6, checkY + 16);
-            ctx.lineTo(checkX + 22, checkY - 14);
-            ctx.strokeStyle = '#00C896';
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-
-            // Main Info Header
-            ctx.fillStyle = '#EAF2FF';
-            ctx.font = 'bold 38px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('Payment Receipt', checkX, checkY + 120);
-
-            ctx.fillStyle = '#8FA3BF';
-            ctx.font = '24px sans-serif';
-            ctx.fillText('Successfully Sent to Merchant', checkX, checkY + 170);
-
-            // Huge Premium Amount presentation
-            ctx.fillStyle = '#EAF2FF';
-            ctx.font = 'bold 96px sans-serif';
-            ctx.fillText(amount, checkX, checkY + 320);
-
-            ctx.fillStyle = '#00C896';
-            ctx.font = '24px sans-serif';
-            ctx.fillText(`For product: ${productName}`, checkX, checkY + 380);
-
-            // Solid Divider Line
-            ctx.beginPath();
-            ctx.moveTo(receiptX + 80, checkY + 440);
-            ctx.lineTo(receiptX + receiptW - 80, checkY + 440);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Data Lists
-            const dataY = checkY + 530;
-            const listItems = [
-                { k: "Sender Profile", v: `${buyerName} (@${buyerUsername || 'buyer'})` },
-                { k: "Received By", v: `${ownerName} (@${ownerUsername || 'owner'})` },
-                { k: "Reference Code", v: transactionId },
-                { k: "Transaction Timestamp", v: displayDateTime }
-            ];
-
-            listItems.forEach((item, index) => {
-                const currentY = dataY + (index * 135);
-
-                // Title Label left-aligned
-                ctx.textAlign = 'left';
-                ctx.fillStyle = '#8FA3BF';
-                ctx.font = '24px sans-serif';
-                ctx.fillText(item.k, receiptX + 80, currentY);
-
-                // Info value right-aligned
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#EAF2FF';
-                ctx.font = 'bold 26px sans-serif';
-                
-                // Truncation safeguard
-                let textVal = item.v;
-                if (textVal.length > 30) {
-                    textVal = textVal.substring(0, 27) + "...";
-                }
-                ctx.fillText(textVal, receiptX + receiptW - 80, currentY);
-
-                // Subtle separating line
-                ctx.beginPath();
-                ctx.moveTo(receiptX + 80, currentY + 45);
-                ctx.lineTo(receiptX + receiptW - 80, currentY + 45);
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            });
-
-            // Secured logo text label
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#8FA3BF';
-            ctx.font = '22px sans-serif';
-            ctx.fillText('🔒 Official FazzPay Bank Transfer Record', checkX, receiptY + 1280);
-        }
-
-        // ================= UNIVERSAL FOOTER WATERMARK =================
-        // Draw the sleek and required watermarked website indicator to look highly authentic
-        ctx.fillStyle = 'rgba(143, 163, 191, 0.4)'; // #8FA3BF with 0.4 opacity
-        ctx.font = 'bold 22px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('fazzpaypic.vercel.app', canvasWidth / 2, canvasHeight - 90);
-
-        // Convert the Canvas directly to a Buffer
-        const buffer = canvas.toBuffer('image/png');
-        
-        // Respond with high quality PNG directly
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'inline; filename="receipt.png"');
-        return res.send(buffer);
-
-    } catch (err) {
-        console.error("Error creating payment receipt canvas image:", err);
-        return res.status(500).json({ error: "Failed to generate payment success image.", details: err.message });
+            <!-- Watermark Footer Wajib -->
+            <text x="540" y="1820" font-family="system-ui, sans-serif" font-size="22" font-weight="bold" fill="#8FA3BF" fill-opacity="0.4" text-anchor="middle">fazzpaypic.vercel.app</text>
+        </svg>
+        `;
     }
+
+    // Berikan respons langsung berupa file SVG berkualitas tinggi
+    res.setHeader('Content-Type', 'image/svg+xml');
+    return res.send(svgContent.trim());
 });
 
-// Dynamic fallback server listener trigger
+// Jalankan Server Express
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`FazzPay Payment Receipt engine listening on port ${PORT}`);
+    console.log(`FazzPay Payment Receipt engine berjalan di port ${PORT}`);
 });
