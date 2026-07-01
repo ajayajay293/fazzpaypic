@@ -1,16 +1,16 @@
 
 const express = require('express');
-const { createCanvas, registerFont } = require('canvas');
+const { createCanvas } = require('canvas');
 const path = require('path');
 
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Gunakan API Key yang sudah ditentukan secara ketat
+// API Key yang valid secara ketat
 const VALID_API_KEY = "fazzganzz";
 
-// Helper untuk memotong teks jika terlalu panjang agar tidak merusak tata letak
+// Helper untuk memotong teks yang terlalu panjang secara aman
 function truncateText(ctx, text, maxWidth) {
   if (!text) return "";
   let width = ctx.measureText(text).width;
@@ -24,7 +24,7 @@ function truncateText(ctx, text, maxWidth) {
   return truncated + "...";
 }
 
-// Helper untuk menggambar kotak berujung bulat (rounded rectangle)
+// Helper menggambar rounded rectangle
 function drawRoundedRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle = null, strokeWidth = 1) {
   ctx.beginPath();
   ctx.moveTo(x + radius, y);
@@ -49,29 +49,26 @@ function drawRoundedRect(ctx, x, y, width, height, radius, fillStyle, strokeStyl
   }
 }
 
-// Helper untuk menggambar ikon checklist sukses
+// Helper menggambar centang sukses
 function drawSuccessCheckmark(ctx, cx, cy, radius) {
-  // Lingkaran luar hijau toska fintech
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
   ctx.fillStyle = '#00C896';
   ctx.fill();
   
-  // Tanda centang putih di dalam lingkaran
   ctx.beginPath();
   ctx.strokeStyle = '#FFFFFF';
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 7;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   
-  // Koordinat relatif tanda centang
   ctx.moveTo(cx - radius * 0.4, cy + radius * 0.05);
   ctx.lineTo(cx - radius * 0.1, cy + radius * 0.35);
   ctx.lineTo(cx + radius * 0.45, cy - radius * 0.25);
   ctx.stroke();
 }
 
-// Endpoint utama untuk menggenerasi gambar struk pembayaran
+// Endpoint utama penghasil gambar struk
 app.post('/api/generate', (req, res) => {
   const {
     apiKey,
@@ -86,24 +83,24 @@ app.post('/api/generate', (req, res) => {
     template = "minimal"
   } = req.body;
 
-  // Validasi Kunci API secara ketat sesuai instruksi core
+  // Validasi Kunci API secara ketat
   if (apiKey !== VALID_API_KEY) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Validasi parameter wajib
+  // Validasi kelengkapan parameter
   if (!amount || !buyerName || !ownerName || !transactionId || !productName || !dateTime) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: "Mohon isi semua field formulir." });
   }
 
   try {
-    // Ukuran Canvas Ultra-HD (1080x1920 piksel, portrait) untuk cetakan super tajam
+    // Ukuran Canvas Ultra-HD (1080x1920 piksel, portrait) untuk cetakan tajam
     const width = 1080;
     const height = 1920;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
-    // Pengaturan Gaya Desain berdasarkan Template
+    // Pengaturan Skema Desain berdasarkan Pilihan Template
     let bgColor = '#0B0F14';
     let cardColor = '#121821';
     let textPrimary = '#EAF2FF';
@@ -112,14 +109,12 @@ app.post('/api/generate', (req, res) => {
     let isGlass = false;
 
     if (template === "fintech") {
-      // Tema 2: Premium Fintech Card (Ada gradasi biru dan sentuhan aksen modern)
       bgColor = '#080C11';
       cardColor = '#151D2A';
       accentColor = '#1E90FF';
       textPrimary = '#FFFFFF';
       textSecondary = '#9AB2D3';
     } else if (template === "glass") {
-      // Tema 3: Dark Glassmorphism (Gradasi gelap dengan efek blur virtual)
       bgColor = '#040608';
       cardColor = 'rgba(255, 255, 255, 0.04)';
       accentColor = '#00C896';
@@ -128,9 +123,11 @@ app.post('/api/generate', (req, res) => {
       isGlass = true;
     }
 
-    // 1. Gambar Background Utama
+    // Menggunakan font standar Cairo/Pango 'sans-serif' agar tidak rusak/kotak-kotak di Linux/Vercel Serverless
+    const fontName = 'sans-serif';
+
+    // 1. Render Background Utama
     if (template === "glass") {
-      // Membuat gradasi warna futuristik di latar belakang untuk menunjang efek kaca transparan
       const bgGrad = ctx.createLinearGradient(0, 0, width, height);
       bgGrad.addColorStop(0, '#090E15');
       bgGrad.addColorStop(0.5, '#05070A');
@@ -138,15 +135,15 @@ app.post('/api/generate', (req, res) => {
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // Gambar bola-bola cahaya lembut di belakang kaca untuk menambah nilai estetik
+      // Gambar bias cahaya estetik
       ctx.beginPath();
-      ctx.arc(200, 400, 300, 0, 2 * Math.PI);
-      ctx.fillStyle = 'rgba(0, 200, 150, 0.07)';
+      ctx.arc(200, 400, 350, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(0, 200, 150, 0.08)';
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(900, 1500, 400, 0, 2 * Math.PI);
-      ctx.fillStyle = 'rgba(30, 144, 255, 0.07)';
+      ctx.arc(900, 1500, 450, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(30, 144, 255, 0.08)';
       ctx.fill();
     } else if (template === "fintech") {
       const bgGrad = ctx.createLinearGradient(0, 0, width, height);
@@ -159,13 +156,13 @@ app.post('/api/generate', (req, res) => {
       ctx.fillRect(0, 0, width, height);
     }
 
-    // 2. Gambar Header Aplikasi "FazzPay"
+    // 2. Judul Aplikasi Teratas
     ctx.textAlign = 'center';
     ctx.fillStyle = '#00C896';
-    ctx.font = 'bold 36px sans-serif';
+    ctx.font = `bold 38px ${fontName}`;
     ctx.fillText("FazzPay Digital Receipt", width / 2, 130);
 
-    // 3. Rancang Area Kartu Utama Struk (Main Receipt Card Box)
+    // 3. Gambar Box Kartu Struk Utama
     const cardX = 90;
     const cardY = 200;
     const cardW = 900;
@@ -173,10 +170,8 @@ app.post('/api/generate', (req, res) => {
     const cardRadius = 36;
 
     if (isGlass) {
-      // Gambar background glassmorphic tipis dengan border bercahaya halus
-      drawRoundedRect(ctx, cardX, cardY, cardW, cardH, cardRadius, 'rgba(255, 255, 255, 0.045)', 'rgba(255, 255, 255, 0.08)', 2);
+      drawRoundedRect(ctx, cardX, cardY, cardW, cardH, cardRadius, 'rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.12)', 2.5);
     } else {
-      // Gambar bayangan halus (soft shadow) di bawah kartu
       ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
       ctx.shadowBlur = 35;
       ctx.shadowOffsetX = 0;
@@ -184,51 +179,48 @@ app.post('/api/generate', (req, res) => {
       
       drawRoundedRect(ctx, cardX, cardY, cardW, cardH, cardRadius, cardColor);
       
-      // Matikan efek bayangan agar tidak merusak elemen teks
+      // Reset bayangan
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
     }
 
-    // 4. Status Transaksi & Ikon Checklist Sukses
+    // 4. Status Centang Sukses Transaksi
     const checkY = cardY + 110;
     drawSuccessCheckmark(ctx, width / 2, checkY, 65);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = textPrimary;
-    ctx.font = '600 42px sans-serif';
-    ctx.fillText("Pembayaran Sukses", width / 2, checkY + 120);
+    ctx.font = `600 44px ${fontName}`;
+    ctx.fillText("Pembayaran Sukses", width / 2, checkY + 125);
 
     ctx.fillStyle = '#00C896';
-    ctx.font = 'bold 30px sans-serif';
-    ctx.fillText("DIVERIFIKASI OLEH FAZZPAY", width / 2, checkY + 175);
+    ctx.font = `bold 28px ${fontName}`;
+    ctx.fillText("VERIFIED BY FAZZPAY", width / 2, checkY + 180);
 
-    // 5. Informasi Nominal Pembayaran Utama (Jumlah Besar)
+    // 5. Nominal Uang Pembayaran (Sangat Menonjol)
     const amountY = checkY + 310;
-    
-    // Header label jumlah nominal
     ctx.fillStyle = textSecondary;
-    ctx.font = '300 28px sans-serif';
+    ctx.font = `300 28px ${fontName}`;
     ctx.fillText("TOTAL PEMBAYARAN", width / 2, amountY);
 
-    // Nilai nominal uang utama (diperbesar tebal)
     ctx.fillStyle = textPrimary;
-    ctx.font = 'bold 88px sans-serif';
+    ctx.font = `bold 84px ${fontName}`;
     ctx.fillText(amount, width / 2, amountY + 110);
 
-    // Garis Pemisah (Divider) dengan gaya titik/dash elegan
+    // Garis Titik-titik (Dashed Divider)
     const divY = amountY + 190;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
     ctx.lineWidth = 4;
     ctx.setLineDash([12, 12]);
     ctx.beginPath();
     ctx.moveTo(cardX + 60, divY);
     ctx.lineTo(cardX + cardW - 60, divY);
     ctx.stroke();
-    ctx.setLineDash([]); // Reset line dash ke solid kembali
+    ctx.setLineDash([]); // Reset ke solid
 
-    // 6. List Detail Transaksi (Kiri: Label, Kanan: Nilai)
+    // 6. Rincian Detail Transaksi (Teks Rapi & Terpotong Aman)
     const startDetailsY = divY + 80;
     const rowHeight = 90;
     const labelX = cardX + 70;
@@ -247,60 +239,60 @@ app.post('/api/generate', (req, res) => {
     details.forEach((item, index) => {
       const currentY = startDetailsY + (index * rowHeight);
       
-      // Label di sebelah kiri
+      // Gambar Label Kiri
       ctx.textAlign = 'left';
       ctx.fillStyle = textSecondary;
-      ctx.font = '30px sans-serif';
+      ctx.font = `30px ${fontName}`;
       ctx.fillText(item.label, labelX, currentY);
 
-      // Value di sebelah kanan
+      // Gambar Nilai Kanan
       ctx.textAlign = 'right';
       if (item.label === "Status Transaksi") {
-        ctx.fillStyle = '#00C896'; // Beri warna hijau khusus pada label status sukses
-        ctx.font = 'bold 30px sans-serif';
+        ctx.fillStyle = '#00C896';
+        ctx.font = `bold 30px ${fontName}`;
       } else {
         ctx.fillStyle = textPrimary;
-        ctx.font = '600 30px sans-serif';
+        ctx.font = `600 30px ${fontName}`;
       }
 
-      // Potong nilai secara otomatis menggunakan helper jika terlalu panjang
-      const maxValWidth = 460;
+      // Truncate untuk mencegah teks saling bertumpuk
+      const maxValWidth = 470;
       const safeValue = truncateText(ctx, item.val, maxValWidth);
       ctx.fillText(safeValue, valueX, currentY);
     });
 
-    // Garis Pembatas Bawah sebelum Watermark
+    // Garis Batas Bawah Sebelum Watermark
     const bottomDivY = startDetailsY + (details.length * rowHeight) + 10;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(cardX + 60, bottomDivY);
     ctx.lineTo(cardX + cardW - 60, bottomDivY);
     ctx.stroke();
 
-    // 7. Keamanan Keaslian / Watermark Tanda Tangan Digital
+    // 7. Watermark Pembuat & Footer
     const watermarkY = bottomDivY + 80;
     ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.font = '28px sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.font = `bold 28px ${fontName}`;
     ctx.fillText("fazzpaypic.vercel.app", width / 2, watermarkY);
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
-    ctx.font = '24px sans-serif';
-    ctx.fillText("Struk digital ini sah dan diterbitkan secara instan oleh sistem pembayaran terenkripsi FazzPay.", width / 2, watermarkY + 50);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+    ctx.font = `24px ${fontName}`;
+    ctx.fillText("Struk digital ini sah dan diproses secara instan oleh sistem pembayaran FazzPay.", width / 2, watermarkY + 50);
 
-    // Mengirimkan hasil gambar akhir berformat PNG langsung ke klien
+    // Kirim gambar hasil rendering langsung sebagai stream PNG
     res.setHeader('Content-Type', 'image/png');
     canvas.createPNGStream().pipe(res);
 
   } catch (error) {
-    console.error("Error generating canvas image:", error);
-    return res.status(500).json({ error: "Gagal memproses gambar struk transaksi" });
+    console.error("Kesalahan pembuatan canvas gambar:", error);
+    return res.status(500).json({ error: "Gagal menggambar struk transfer digital." });
   }
 });
 
-// Jalankan server lokal di port 3000 jika dijalankan langsung
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`FazzPay Server running perfectly on port ${PORT}`);
+  console.log(`FazzPay Server running on port ${PORT}`);
 });
+
