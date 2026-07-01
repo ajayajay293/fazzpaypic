@@ -2,144 +2,185 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Referensi Dokumentasi API FazzPay</title>
-    <!-- Tailwind CSS Engine -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0B0F14;
-            letter-spacing: -0.015em;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation - FazzPay Receipt Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #0B0F14;
+      color: #EAF2FF;
+      letter-spacing: -0.01em;
+    }
+    code, pre {
+      font-family: 'Fira Code', monospace;
+    }
+  </style>
 </head>
-<body class="text-[#EAF2FF] min-h-screen">
+<body class="min-h-screen pb-16">
 
-    <header class="border-b border-white/5 bg-[#121821] py-4">
-        <div class="max-w-4xl mx-auto px-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <a href="/" class="flex items-center gap-2.5 hover:opacity-85 transition-opacity">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#00C896] to-[#1E90FF] flex items-center justify-center">
-                        <svg class="w-5 h-5 text-[#0B0F14]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <span class="font-extrabold text-sm tracking-tight text-[#EAF2FF]">FAZZPAY <span class="text-[#00C896] text-[10px] font-mono font-medium">DOKUMENTASI</span></span>
-                </a>
-            </div>
-            <a href="/" class="text-xs font-semibold text-[#8FA3BF] hover:text-[#00C896] transition-colors">
-                ← Kembali ke Lab Bukti Transfer
-            </a>
+  <!-- Header -->
+  <header class="sticky top-0 z-50 w-full bg-[#121821]/80 backdrop-blur-md border-b border-white/[0.06] py-4 px-6 mb-8">
+    <div class="max-w-[800px] mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-lg text-white">FazzPay <span class="text-[#00C896]">Docs</span></span>
+      </div>
+      <a href="/" class="text-xs text-[#8FA3BF] hover:text-[#00C896] transition-colors border border-white/10 px-4 py-1.5 rounded-full bg-white/[0.02]">Kembali ke Generator</a>
+    </div>
+  </header>
+
+  <!-- Konten Dokumentasi -->
+  <main class="max-w-[800px] mx-auto px-6 space-y-8">
+    
+    <!-- Bagian 1: Pengenalan -->
+    <section class="space-y-3">
+      <h1 class="text-2xl font-bold text-white">FazzPay Receipt Generator API</h1>
+      <p class="text-sm text-[#8FA3BF] leading-relaxed">
+        API ini dirancang untuk menghasilkan gambar bukti transfer pembayaran digital yang aman, beresolusi sangat tinggi, dan tajam (1080x1920). Layanan ini sepenuhnya kompatibel dengan penyebaran Vercel Serverless.
+      </p>
+    </section>
+
+    <!-- Peringatan Kunci API Rahasia -->
+    <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 text-xs text-yellow-200/90 leading-relaxed">
+      <strong class="text-yellow-400 font-semibold block mb-1">⚠️ PERINGATAN KEAMANAN:</strong>
+      Kunci API Anda bersifat pribadi. Harap jangan pernah menyebarkan parameter kunci API Anda pada kode repositori publik atau di sisi klien tanpa enkripsi yang mumpuni.
+    </div>
+
+    <!-- Bagian 2: Spesifikasi Endpoint -->
+    <section class="space-y-4">
+      <h2 class="text-lg font-semibold text-white border-b border-white/5 pb-2">Spesifikasi Endpoint</h2>
+      
+      <div class="flex items-center gap-3">
+        <span class="bg-[#00C896]/10 text-[#00C896] font-bold text-xs px-2.5 py-1 rounded">POST</span>
+        <code class="text-sm bg-white/5 px-2.5 py-1 rounded text-white font-medium">/api/generate</code>
+      </div>
+      
+      <p class="text-xs text-[#8FA3BF]">
+        Endpoint ini menerima data JSON transaksi dan mengembalikan aliran berkas gambar langsung berformat <code class="text-white">image/png</code>.
+      </p>
+    </section>
+
+    <!-- Bagian 3: Parameter Permintaan (Request Parameters) -->
+    <section class="space-y-4">
+      <h2 class="text-lg font-semibold text-white border-b border-white/5 pb-2">Parameter Payload JSON</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead>
+            <tr class="border-b border-white/10 text-[#8FA3BF]">
+              <th class="py-3 font-semibold">Parameter</th>
+              <th class="py-3 font-semibold">Tipe</th>
+              <th class="py-3 font-semibold">Deskripsi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-[#EAF2FF]">
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">apiKey</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Wajib diisi dengan kunci yang sah: <code class="bg-white/5 px-1 rounded text-white">fazzganzz</code></td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">amount</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Jumlah nominal uang lengkap dengan satuan, contoh: "Rp 150.000,00"</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">productName</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Nama barang atau layanan yang ditransaksikan.</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">buyerName</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Nama lengkap pembeli / pengirim.</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">buyerUsername</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Nama pengguna pembeli diawali tanda @ (opsional).</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">ownerName</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Nama penerima dana (merchant).</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">ownerUsername</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Nama pengguna penerima diawali tanda @ (opsional).</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">transactionId</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Kode unik referensi transaksi perbankan.</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">dateTime</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Waktu dan tanggal transaksi berlangsung.</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-[#00C896] font-medium">template</td>
+              <td class="py-3 text-slate-400">string</td>
+              <td class="py-3">Variasi gaya kartu. Pilihan: <code class="text-white">minimal</code>, <code class="text-white">fintech</code>, <code class="text-white">glass</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Bagian 4: Contoh Kode Pemanggilan (Request Example) -->
+    <section class="space-y-4">
+      <h2 class="text-lg font-semibold text-white border-b border-white/5 pb-2">Contoh Integrasi JavaScript (cURL)</h2>
+      <pre class="bg-[#121821] p-4 rounded-xl text-xs text-emerald-400 overflow-x-auto border border-white/5">
+fetch('/api/generate', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    apiKey: "fazzganzz",
+    amount: "Rp 750.000,00",
+    productName: "Sewa Server Cloud Pro",
+    buyerName: "Doni Hermawan",
+    buyerUsername: "@doni",
+    ownerName: "Fazz Corp",
+    ownerUsername: "@fazzcorp",
+    transactionId: "TRX-99810-FP",
+    dateTime: "01 Jul 2026, 16:02",
+    template: "glass"
+  })
+})
+.then(res => res.blob())
+.then(blob => {
+  const imageUrl = URL.createObjectURL(blob);
+  document.getElementById('displayImage').src = imageUrl;
+});</pre>
+    </section>
+
+    <!-- Bagian 5: Penanganan Error -->
+    <section class="space-y-4">
+      <h2 class="text-lg font-semibold text-white border-b border-white/5 pb-2">Respon Kode Kesalahan (Error Handling)</h2>
+      <div class="space-y-3 text-xs">
+        <div class="flex items-center gap-3">
+          <span class="bg-red-500/10 text-red-400 font-bold px-2 py-1 rounded">401 Unauthorized</span>
+          <span class="text-slate-400">Diberikan jika Kunci API tidak sesuai atau tidak dikirimkan.</span>
         </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto px-4 py-8">
-        
-        <div class="mb-10">
-            <span class="text-[10px] px-2.5 py-1 rounded-full bg-[#1E90FF]/15 text-[#1E90FF] font-bold uppercase tracking-wider">REST API v1.3</span>
-            <h1 class="text-3xl font-black mt-3 text-white">Panduan Integrasi API FazzPay</h1>
-            <p class="text-sm text-[#8FA3BF] mt-2 max-w-2xl">
-                Gunakan API resmi FazzPay untuk mengotomatiskan pembuatan dokumen kwitansi transfer beresolusi ultra-tinggi dalam format PNG biner asli yang digambar langsung di backend Rust-powered Node Canvas.
-            </p>
+        <div class="flex items-center gap-3">
+          <span class="bg-red-500/10 text-red-400 font-bold px-2 py-1 rounded">400 Bad Request</span>
+          <span class="text-slate-400">Diberikan apabila salah satu kolom parameter utama diabaikan atau kosong.</span>
         </div>
+      </div>
+    </section>
 
-        <div class="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
-            <svg class="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-                <h4 class="font-bold text-sm text-[#EAF2FF]">Penggunaan API Key Secara Rahasia</h4>
-                <p class="text-xs text-[#8FA3BF] mt-1">Gunakan Kunci API yang sah di lingkungan back-end atau server terenkripsi Anda. Jangan menyebarkan Kunci API secara publik di dalam script HTML klien untuk mencegah penyalahgunaan.</p>
-            </div>
-        </div>
+    <!-- Footer -->
+    <footer class="border-t border-white/5 pt-8 text-center text-xs text-[#8FA3BF] space-y-2">
+      <p>Untuk permintaan akses kunci API khusus, hubungi tim dukungan kami.</p>
+      <p class="font-semibold text-[#00C896]">Telegram / Hubungi: @FazzGanteng</p>
+    </footer>
 
-        <section class="mb-10 space-y-4">
-            <h2 class="text-xl font-bold text-white border-b border-white/5 pb-2">Definisi Endpoint</h2>
-            <div class="flex items-center gap-3">
-                <span class="px-3 py-1 bg-[#00C896] text-[#0B0F14] text-xs font-black rounded-lg">POST</span>
-                <span class="font-mono text-sm text-[#EAF2FF] bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">/api/generate</span>
-            </div>
-            <p class="text-xs text-[#8FA3BF]">
-                Menerima payload bertipe JSON dan secara langsung merespons dengan konten dokumen gambar biner PNG berkualitas tinggi.
-            </p>
-        </section>
-
-        <section class="mb-10 space-y-4">
-            <h2 class="text-xl font-bold text-white border-b border-white/5 pb-2">Parameter Payload (JSON)</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs text-[#8FA3BF] border-collapse">
-                    <thead>
-                        <tr class="border-b border-white/10 text-[#EAF2FF]">
-                            <th class="py-2">Kolom</th>
-                            <th class="py-2">Tipe</th>
-                            <th class="py-2">Wajib</th>
-                            <th class="py-2">Deskripsi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5">
-                        <tr>
-                            <td class="py-3 font-mono text-[#00C896]">apiKey</td>
-                            <td class="py-3">string</td>
-                            <td class="py-3 text-red-400 font-bold">Wajib</td>
-                            <td class="py-3">Token otorisasi keamanan Anda (Kunci standar: "fazzganzz").</td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 font-mono text-[#00C896]">amount</td>
-                            <td class="py-3">string</td>
-                            <td class="py-3 text-red-400 font-bold">Wajib</td>
-                            <td class="py-3">Nilai nominal transaksi (Format string, Contoh: "500.000").</td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 font-mono text-[#00C896]">productName</td>
-                            <td class="py-3">string</td>
-                            <td class="py-3 text-red-400 font-bold">Wajib</td>
-                            <td class="py-3">Nama barang, langganan server, atau deskripsi jasa.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <div>
-                <h3 class="text-sm font-bold text-white mb-2">Struktur Payload Permintaan (JSON)</h3>
-                <pre class="bg-[#121821] border border-white/5 rounded-2xl p-4 text-[11px] text-[#00C896] font-mono overflow-x-auto">
-{
-  "apiKey": "fazzganzz",
-  "amount": "1.500.000",
-  "productName": "VIP Ticket Annual Pass",
-  "buyerName": "Michael Scott",
-  "buyerUsername": "mscott",
-  "ownerName": "FazzPay Events",
-  "ownerUsername": "fazzevents",
-  "transactionId": "TXN-71937218319-FAZZ",
-  "dateTime": "2026-07-01 19:45:00",
-  "template": "glass"
-}
-                </pre>
-            </div>
-            <div>
-                <h3 class="text-sm font-bold text-white mb-2">Bentuk Respons</h3>
-                <div class="bg-[#121821] border border-white/5 rounded-2xl p-4 text-[11px] text-[#8FA3BF] font-mono h-full flex flex-col justify-between">
-                    <div>
-                        <span class="text-[#00C896] font-bold">HTTP/1.1 200 OK</span>
-                        <br>Content-Type: image/png
-                        <br>Content-Disposition: inline; filename="receipt.png"
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="border-t border-white/5 pt-8 mt-12 text-center">
-            <p class="text-sm font-bold text-[#00C896] mt-1">
-                Kontak Telegram: <a href="https://t.me/FazzGanteng" target="_blank" class="underline">@FazzGanteng</a>
-            </p>
-        </footer>
-
-    </main>
+  </main>
 
 </body>
 </html>
